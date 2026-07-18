@@ -15,6 +15,7 @@ import ProjectCard from '@/components/investor/ProjectCard';
 import CompareFounders from '@/components/investor/CompareFounders';
 import MeetingScheduler from '@/components/investor/MeetingScheduler';
 import FounderReportModal from '@/components/investor/FounderReportModal';
+import ProjectAgent from '@/components/project/ProjectAgent';
 import {
   Trophy, TrendingUp, Star, Zap, Search, Award, Flame,
   Activity, DollarSign, Lightbulb, Sparkles, Send, Calendar,
@@ -37,6 +38,7 @@ export default function InvestorDashboard() {
   const [showCompare, setShowCompare] = useState(false);
   const [meetingFounder, setMeetingFounder] = useState(null);
   const [reportFounder, setReportFounder] = useState(null);
+  const [projectAgent, setProjectAgent] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => { loadData(); }, []);
@@ -180,7 +182,7 @@ export default function InvestorDashboard() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {searchType === 'founders'
                   ? searchResults.map((f, i) => renderFounderCard(f, i + 1))
-                  : searchResults.map((p, i) => <ProjectCard key={p.id} project={p} rank={i + 1} />)}
+                  : searchResults.map((p, i) => <ProjectCard key={p.id} project={p} rank={i + 1} onAskProject={setProjectAgent} />)}
               </div>
             </div>
           )}
@@ -208,7 +210,7 @@ export default function InvestorDashboard() {
             <RankingSection title="Hidden Gems" icon={Sparkles} iconColor="text-violet-400" items={hiddenGems} renderItem={renderFounderCard} />
             <RankingSection title="Fastest Growing" icon={TrendingUp} iconColor="text-emerald-400" items={fastestGrowing} renderItem={renderFounderCard} />
             <RankingSection title="Highest Founder Score" icon={Award} iconColor="text-amber-400" items={topFounders} renderItem={renderFounderCard} />
-            <RankingSection title="Best AI Products" icon={Rocket} iconColor="text-sky-400" items={bestProducts} renderItem={(p, rank) => <ProjectCard key={p.id} project={p} rank={rank} />} />
+            <RankingSection title="Best AI Products" icon={Rocket} iconColor="text-sky-400" items={bestProducts} renderItem={(p, rank) => <ProjectCard key={p.id} project={p} rank={rank} onAskProject={setProjectAgent} />} />
             <RankingSection title="Most Active GitHub" icon={Activity} iconColor="text-white" items={mostActiveGithub} renderItem={renderFounderCard} />
             <RankingSection title="Highest Revenue" icon={DollarSign} iconColor="text-emerald-400" items={highestRevenue} renderItem={renderFounderCard} />
             <RankingSection title="Most Innovative" icon={Lightbulb} iconColor="text-amber-400" items={mostInnovative} renderItem={renderFounderCard} />
@@ -305,6 +307,9 @@ export default function InvestorDashboard() {
       )}
       {reportFounder && (
         <FounderReportModal founder={reportFounder} projects={projects} onClose={() => setReportFounder(null)} />
+      )}
+      {projectAgent && (
+        <ProjectAgent project={projectAgent} onClose={() => setProjectAgent(null)} />
       )}
     </div>
   );
