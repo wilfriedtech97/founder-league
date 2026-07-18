@@ -28,6 +28,8 @@ export default function Navbar({ userRole }) {
 
   const adminLinks = [
     { label: 'Admin Panel', path: '/admin' },
+    { label: 'Founders', path: '/founder-dashboard' },
+    { label: 'Investors', path: '/investor-dashboard' },
   ];
 
   const links = userRole === 'founder' ? founderLinks : userRole === 'investor' ? investorLinks : userRole === 'admin' ? adminLinks : [];

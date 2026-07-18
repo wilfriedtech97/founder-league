@@ -20,7 +20,18 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      const currentUser = await base44.auth.me();
+      if (currentUser.role === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        try {
+          const founderProfiles = await base44.entities.FounderProfile.filter({ created_by_id: currentUser.id });
+          if (founderProfiles.length > 0) { window.location.href = '/founder-dashboard'; return; }
+          const investorProfiles = await base44.entities.InvestorProfile.filter({ created_by_id: currentUser.id });
+          if (investorProfiles.length > 0) { window.location.href = '/investor-dashboard'; return; }
+        } catch (e) { /* ignore */ }
+        window.location.href = '/founder-dashboard';
+      }
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {

@@ -1,11 +1,39 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import {
   TrendingUp, Bot, Zap, Target, Activity,
   ArrowRight, Star, Github, Brain, Rocket, Shield, BarChart3, Sparkles
 } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
 
 export default function Home() {
+  const { user, isAuthenticated } = useAuth();
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const determineRole = async () => {
+      if (!isAuthenticated || !user) {
+        setUserRole(null);
+        return;
+      }
+      if (user.role === 'admin') {
+        setUserRole('admin');
+        return;
+      }
+      try {
+        const founderProfiles = await base44.entities.FounderProfile.filter({ created_by_id: user.id });
+        if (founderProfiles.length > 0) { setUserRole('founder'); return; }
+        const investorProfiles = await base44.entities.InvestorProfile.filter({ created_by_id: user.id });
+        if (investorProfiles.length > 0) { setUserRole('investor'); return; }
+      } catch (e) { /* ignore */ }
+      setUserRole('founder');
+    };
+    determineRole();
+  }, [user, isAuthenticated]);
+
   const agents = [
     { name: 'Founder AI Agent', desc: 'Represents, explains, and negotiates on behalf of the founder — like a football agent for Ronaldo.', icon: Bot, color: 'from-amber-400 to-orange-600' },
     { name: 'Project AI Agent', desc: 'Every project speaks for itself. Answers investor questions, defends innovation, debates competitors.', icon: Brain, color: 'from-violet-400 to-purple-600' },
@@ -31,6 +59,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <Navbar userRole={userRole} />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
