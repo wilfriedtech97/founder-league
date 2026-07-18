@@ -1,0 +1,102 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "founder_id": {
+      "type": "string"
+    },
+    "founder_name": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "default": "AI/ML"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "Idea",
+        "MVP",
+        "Beta",
+        "Live",
+        "Scaling"
+      ],
+      "default": "MVP"
+    },
+    "users_count": {
+      "type": "number",
+      "default": 0
+    },
+    "monthly_growth": {
+      "type": "number",
+      "default": 0
+    },
+    "retention_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "revenue_arr": {
+      "type": "string",
+      "default": "$0"
+    },
+    "score_innovation": {
+      "type": "number",
+      "default": 0
+    },
+    "score_market": {
+      "type": "number",
+      "default": 0
+    },
+    "score_execution": {
+      "type": "number",
+      "default": 0
+    },
+    "score_scalability": {
+      "type": "number",
+      "default": 0
+    },
+    "score_traction": {
+      "type": "number",
+      "default": 0
+    },
+    "score_overall": {
+      "type": "number",
+      "default": 0
+    },
+    "investment_recommendation": {
+      "type": "string",
+      "enum": [
+        "BUY",
+        "MONITOR",
+        "PASS"
+      ],
+      "default": "MONITOR"
+    },
+    "confidence_score": {
+      "type": "number",
+      "default": 0
+    },
+    "demo_url": {
+      "type": "string"
+    },
+    "pitch": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "founder_id"
+  ]
+}

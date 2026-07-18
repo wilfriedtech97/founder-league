@@ -1,0 +1,135 @@
+{
+  "name": "FounderProfile",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "headline": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "github_url": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "portfolio_url": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "focus_area": {
+      "type": "string",
+      "default": "AI/ML"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "Pre-seed",
+        "Seed",
+        "Series A",
+        "Series B",
+        "Growth"
+      ],
+      "default": "Pre-seed"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "score_overall": {
+      "type": "number",
+      "default": 0
+    },
+    "score_execution": {
+      "type": "number",
+      "default": 0
+    },
+    "score_innovation": {
+      "type": "number",
+      "default": 0
+    },
+    "score_leadership": {
+      "type": "number",
+      "default": 0
+    },
+    "score_ai_skills": {
+      "type": "number",
+      "default": 0
+    },
+    "score_business": {
+      "type": "number",
+      "default": 0
+    },
+    "score_growth": {
+      "type": "number",
+      "default": 0
+    },
+    "score_communication": {
+      "type": "number",
+      "default": 0
+    },
+    "risk_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "investment_readiness": {
+      "type": "number",
+      "default": 0
+    },
+    "commits_per_month": {
+      "type": "number",
+      "default": 0
+    },
+    "products_shipped": {
+      "type": "number",
+      "default": 0
+    },
+    "hackathon_wins": {
+      "type": "number",
+      "default": 0
+    },
+    "followers": {
+      "type": "number",
+      "default": 0
+    },
+    "revenue": {
+      "type": "string",
+      "default": "$0"
+    },
+    "trending": {
+      "type": "boolean",
+      "default": false
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "tag": {
+      "type": "string",
+      "enum": [
+        "Trending",
+        "Most Wanted",
+        "Underpriced",
+        "High Potential",
+        "Free Agent",
+        "Hackathon Winner",
+        "Hidden Gem"
+      ],
+      "default": "Hidden Gem"
+    }
+  },
+  "required": [
+    "full_name"
+  ]
+}

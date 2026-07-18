@@ -1,0 +1,45 @@
+{
+  "name": "InvestorProfile",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "fund_name": {
+      "type": "string"
+    },
+    "headline": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "thesis": {
+      "type": "string"
+    },
+    "check_size": {
+      "type": "string",
+      "default": "$100K-$500K"
+    },
+    "sectors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "investments_made": {
+      "type": "number",
+      "default": 0
+    },
+    "portfolio_value": {
+      "type": "string",
+      "default": "$0"
+    }
+  },
+  "required": [
+    "full_name"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "InvestmentOffer",
+  "type": "object",
+  "properties": {
+    "founder_id": {
+      "type": "string"
+    },
+    "founder_name": {
+      "type": "string"
+    },
+    "investor_id": {
+      "type": "string"
+    },
+    "investor_name": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "string"
+    },
+    "valuation": {
+      "type": "string"
+    },
+    "equity": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "rejected",
+        "negotiating"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "founder_id",
+    "investor_id"
+  ]
+}

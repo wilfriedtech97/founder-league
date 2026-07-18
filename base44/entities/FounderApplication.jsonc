@@ -1,0 +1,64 @@
+{
+  "name": "FounderApplication",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "github_url": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "portfolio_url": {
+      "type": "string"
+    },
+    "focus_area": {
+      "type": "string",
+      "enum": [
+        "AI/ML",
+        "FinTech",
+        "HealthTech",
+        "Robotics",
+        "Education",
+        "Infrastructure",
+        "Vision",
+        "LLM",
+        "SaaS",
+        "Other"
+      ],
+      "default": "AI/ML"
+    },
+    "experience_years": {
+      "type": "number",
+      "default": 0
+    },
+    "pitch": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "review_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "email"
+  ]
+}

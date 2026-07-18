@@ -1,0 +1,64 @@
+{
+  "name": "InvestorApplication",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "fund_name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "Partner",
+        "Principal",
+        "Associate",
+        "Angel Investor",
+        "Family Office",
+        "Other"
+      ],
+      "default": "Partner"
+    },
+    "thesis": {
+      "type": "string"
+    },
+    "check_size": {
+      "type": "string",
+      "enum": [
+        "$25K-$100K",
+        "$100K-$500K",
+        "$500K-$2M",
+        "$2M-$10M",
+        "$10M+"
+      ],
+      "default": "$100K-$500K"
+    },
+    "sectors": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "review_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "email"
+  ]
+}

@@ -6,6 +6,18 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { Navigate } from 'react-router-dom';
+import Home from '@/pages/Home';
+import ApplyFounder from '@/pages/ApplyFounder';
+import ApplyInvestor from '@/pages/ApplyInvestor';
+import AdminPanel from '@/pages/AdminPanel';
+import FounderDashboard from '@/pages/FounderDashboard';
+import InvestorDashboard from '@/pages/InvestorDashboard';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -35,6 +47,18 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       {/* Add your page Route elements here */}
+      <Route path="/" element={<Home />} />
+      <Route path="/apply/founder" element={<ApplyFounder />} />
+      <Route path="/apply/investor" element={<ApplyInvestor />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/founder-dashboard" element={<FounderDashboard />} />
+        <Route path="/investor-dashboard" element={<InvestorDashboard />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
