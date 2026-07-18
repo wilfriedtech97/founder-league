@@ -18,6 +18,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import JudgeAIPage from '@/pages/JudgeAIPage';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/founder-dashboard" element={<FounderDashboard />} />
         <Route path="/investor-dashboard" element={<InvestorDashboard />} />
+        <Route path="/judge" element={<JudgeAIPage />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

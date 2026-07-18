@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, User, TrendingUp, LogOut, Menu, X } from 'lucide-react';
+import { Shield, User, TrendingUp, LogOut, Menu, X, Scale } from 'lucide-react';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 
@@ -17,6 +17,7 @@ export default function Navbar({ userRole }) {
     { label: 'My Projects', path: '/founder-dashboard#projects' },
     { label: 'Founder Score', path: '/founder-dashboard#score' },
     { label: 'Offers', path: '/founder-dashboard#offers' },
+    { label: 'Judge AI', path: '/judge', icon: Scale },
   ];
 
   const investorLinks = [
@@ -24,12 +25,14 @@ export default function Navbar({ userRole }) {
     { label: 'Rankings', path: '/investor-dashboard#rankings' },
     { label: 'Watchlist', path: '/investor-dashboard#watchlist' },
     { label: 'Offers', path: '/investor-dashboard#offers' },
+    { label: 'Judge AI', path: '/judge', icon: Scale },
   ];
 
   const adminLinks = [
     { label: 'Admin Panel', path: '/admin' },
     { label: 'Founders', path: '/founder-dashboard' },
     { label: 'Investors', path: '/investor-dashboard' },
+    { label: 'Judge AI', path: '/judge', icon: Scale },
   ];
 
   const links = userRole === 'founder' ? founderLinks : userRole === 'investor' ? investorLinks : userRole === 'admin' ? adminLinks : [];
@@ -53,8 +56,8 @@ export default function Navbar({ userRole }) {
               </>
             )}
             {links.map((link) => (
-              <Link key={link.label} to={link.path} className="text-white/70 hover:text-white transition-colors text-sm font-medium">
-                {link.label}
+              <Link key={link.label} to={link.path} className={`flex items-center gap-1 transition-colors text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : 'text-white/70 hover:text-white'}`}>
+                {link.icon && <link.icon className="w-3.5 h-3.5" />} {link.label}
               </Link>
             ))}
             {userRole ? (
@@ -82,8 +85,8 @@ export default function Navbar({ userRole }) {
               </>
             )}
             {links.map((link) => (
-              <Link key={link.label} to={link.path} onClick={() => setOpen(false)} className="text-white/70 hover:text-white text-sm font-medium">
-                {link.label}
+              <Link key={link.label} to={link.path} onClick={() => setOpen(false)} className={`flex items-center gap-1 text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : 'text-white/70 hover:text-white'}`}>
+                {link.icon && <link.icon className="w-3.5 h-3.5" />} {link.label}
               </Link>
             ))}
             {userRole ? (
