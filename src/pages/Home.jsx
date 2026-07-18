@@ -1,21 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Trophy, TrendingUp, Bot, Users, Zap, Target, Activity, Award,
+  TrendingUp, Bot, Zap, Target, Activity,
   ArrowRight, Star, Github, Brain, Rocket, Shield, BarChart3, Sparkles
 } from 'lucide-react';
 
 export default function Home() {
-  const ecosystemMap = [
-    { football: 'Player', vc: 'Founder', icon: Users },
-    { football: 'Agent', vc: 'AI Founder Agent', icon: Bot },
-    { football: 'Scout', vc: 'Investor AI Scout', icon: Target },
-    { football: 'Club', vc: 'VC Fund', icon: Trophy },
-    { football: 'Transfer', vc: 'Investment', icon: ArrowRight },
-    { football: 'Performance', vc: 'Startup Growth', icon: Activity },
-    { football: 'Career', vc: 'Founder Reputation', icon: Award },
-  ];
-
   const agents = [
     { name: 'Founder AI Agent', desc: 'Represents, explains, and negotiates on behalf of the founder — like a football agent for Ronaldo.', icon: Bot, color: 'from-amber-400 to-orange-600' },
     { name: 'Project AI Agent', desc: 'Every project speaks for itself. Answers investor questions, defends innovation, debates competitors.', icon: Brain, color: 'from-violet-400 to-purple-600' },
@@ -126,54 +116,6 @@ export default function Home() {
               </div>
             ))}
           </motion.div>
-        </div>
-      </section>
-
-      {/* Ecosystem Mapping */}
-      <section className="py-24 px-4 sm:px-6 relative">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-black mb-4">
-              The Ecosystem
-            </h2>
-            <p className="text-white/50 text-lg">Everything becomes intuitive.</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-amber-400 text-center mb-6">⚽ Football</h3>
-              {ecosystemMap.map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-3 px-6 py-4 rounded-xl bg-white/5 border border-white/10"
-                >
-                  <item.icon className="w-5 h-5 text-amber-400" />
-                  <span className="font-semibold text-white/90">{item.football}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-emerald-400 text-center mb-6">💼 VC World</h3>
-              {ecosystemMap.map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-3 px-6 py-4 rounded-xl bg-white/5 border border-white/10"
-                >
-                  <item.icon className="w-5 h-5 text-emerald-400" />
-                  <span className="font-semibold text-white/90">{item.vc}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
