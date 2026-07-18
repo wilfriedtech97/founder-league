@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { Bookmark, GitCompare, FileText, Calendar, Send, Flame } from 'lucide-react';
+import { Bookmark, GitCompare, FileText, Calendar, Send, Flame, Scale } from 'lucide-react';
 import ScoreRing from '@/components/ScoreRing';
 import { Button } from '@/components/ui/button';
 
-export default function FounderCard({ founder, rank, isWatchlisted, onToggleWatchlist, onCompare, onScheduleMeeting, onViewReport, onInvest }) {
+export default function FounderCard({ founder, rank, isWatchlisted, onToggleWatchlist, onCompare, onScheduleMeeting, onViewReport, onInvest, onJudge }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -66,6 +66,9 @@ export default function FounderCard({ founder, rank, isWatchlisted, onToggleWatc
           <Send className="w-3.5 h-3.5 mr-1" /> Invest
         </Button>
       </div>
+      <Button onClick={() => onJudge?.(founder)} size="sm" variant="outline" className="w-full border-violet-500/30 text-violet-300 hover:bg-violet-500/10 mt-2">
+        <Scale className="w-3.5 h-3.5 mr-1" /> Judge AI
+      </Button>
     </motion.div>
   );
 }

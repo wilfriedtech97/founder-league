@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { Zap, Rocket, MessageSquare } from 'lucide-react';
+import { Zap, Rocket, MessageSquare, Scale } from 'lucide-react';
 
-export default function ProjectCard({ project, rank, onAskProject }) {
+export default function ProjectCard({ project, rank, onAskProject, onJudge }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -30,9 +30,14 @@ export default function ProjectCard({ project, rank, onAskProject }) {
         }`}>
           {project.investment_recommendation}
         </span>
-        <button onClick={() => onAskProject?.(project)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 text-xs font-medium hover:bg-sky-500/30 transition-colors">
-          <MessageSquare className="w-3.5 h-3.5" /> Ask Project
-        </button>
+        <div className="flex gap-1.5">
+          <button onClick={() => onAskProject?.(project)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 text-xs font-medium hover:bg-sky-500/30 transition-colors">
+            <MessageSquare className="w-3.5 h-3.5" /> Ask
+          </button>
+          <button onClick={() => onJudge?.(project)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-violet-500/20 text-violet-300 text-xs font-medium hover:bg-violet-500/30 transition-colors">
+            <Scale className="w-3.5 h-3.5" /> Judge
+          </button>
+        </div>
       </div>
     </motion.div>
   );

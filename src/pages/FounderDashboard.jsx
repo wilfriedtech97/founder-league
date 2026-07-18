@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy, Github, Linkedin, Globe, Star, TrendingUp, Rocket,
-  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users
+  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users, Scale
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
@@ -16,6 +16,7 @@ import { useToast } from '@/components/ui/use-toast';
 import ProfileEditModal from '@/components/founder/ProfileEditModal';
 import TeamManager from '@/components/founder/TeamManager';
 import FounderAgent from '@/components/founder/FounderAgent';
+import JudgeAI from '@/components/judge/JudgeAI';
 
 export default function FounderDashboard() {
   const [profile, setProfile] = useState(null);
@@ -24,6 +25,8 @@ export default function FounderDashboard() {
   const [loading, setLoading] = useState(true);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', tagline: '', description: '', category: 'AI/ML', stage: 'MVP' });
+  const [judgeTarget, setJudgeTarget] = useState(null);
+  const [judgeType, setJudgeType] = useState('founder');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -136,9 +139,14 @@ export default function FounderDashboard() {
             <h1 className="text-3xl sm:text-4xl font-black">{profile.full_name}</h1>
             <p className="text-white/50">{profile.headline || profile.focus_area} · {profile.focus_area}</p>
           </div>
-          <ProfileEditModal profile={profile} onUpdated={loadData}>
-            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">Edit Profile</Button>
-          </ProfileEditModal>
+          <div className="flex gap-2">
+            <Button onClick={() => { setJudgeTarget(profile); setJudgeType('founder'); }} variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10">
+              <Scale className="w-4 h-4 mr-1" /> Get Judged
+            </Button>
+            <ProfileEditModal profile={profile} onUpdated={loadData}>
+              <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">Edit Profile</Button>
+            </ProfileEditModal>
+          </div>
         </motion.div>
 
         {/* Score Section */}
@@ -259,10 +267,13 @@ export default function FounderDashboard() {
                     </span>
                   </div>
                   {proj.tagline && <p className="text-white/50 text-sm mb-3">{proj.tagline}</p>}
-                  <div className="flex items-center gap-4 text-xs text-white/60">
+                  <div className="flex items-center gap-4 text-xs text-white/60 mb-3">
                     <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> Score: {proj.score_overall}</span>
                     <span>Confidence: {proj.confidence_score}%</span>
                   </div>
+                  <button onClick={() => { setJudgeTarget(proj); setJudgeType('project'); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-500/20 text-violet-300 text-xs font-medium hover:bg-violet-500/30 transition-colors">
+                    <Scale className="w-3.5 h-3.5" /> Judge Project
+                  </button>
                 </div>
               ))}
             </div>
@@ -321,6 +332,9 @@ export default function FounderDashboard() {
           )}
         </div>
       </div>
+      {judgeTarget && (
+        <JudgeAI target={judgeTarget} type={judgeType} onClose={() => setJudgeTarget(null)} />
+      )}
     </div>
   );
 }
