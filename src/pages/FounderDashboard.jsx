@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import ProfileEditModal from '@/components/founder/ProfileEditModal';
 import TeamManager from '@/components/founder/TeamManager';
-import AIChat from '@/components/founder/AIChat';
+import FounderAgent from '@/components/founder/FounderAgent';
 
 export default function FounderDashboard() {
   const [profile, setProfile] = useState(null);
@@ -194,9 +194,9 @@ export default function FounderDashboard() {
           {profile.pitch && <a href={profile.pitch} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-500/10 border border-violet-500/20 hover:border-violet-500/40 transition-colors text-sm"><FileText className="w-4 h-4 text-violet-400" /> Pitch</a>}
         </div>
 
-        {/* AI Agent Chat & Coaching */}
+        {/* Founder AI Agent */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <AIChat profile={profile} />
+          <FounderAgent profile={profile} projects={projects} onUpdated={loadData} />
         </motion.div>
 
         {/* Projects */}
