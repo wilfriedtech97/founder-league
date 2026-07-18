@@ -64,8 +64,8 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=1920&q=80"
-            alt="Stadium"
+            src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&q=80"
+            alt="AI Technology"
             className="w-full h-full object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black" />
@@ -210,8 +210,8 @@ export default function Home() {
       <section className="py-24 px-4 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1431324155629-1a1deb66ce16?w=1920&q=80"
-            alt="Stadium lights"
+            src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1920&q=80"
+            alt="AI Neural Network"
             className="w-full h-full object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black" />
