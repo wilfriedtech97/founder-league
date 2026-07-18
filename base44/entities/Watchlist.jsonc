@@ -1,0 +1,22 @@
+{
+  "name": "Watchlist",
+  "type": "object",
+  "properties": {
+    "investor_id": {
+      "type": "string"
+    },
+    "founder_id": {
+      "type": "string"
+    },
+    "founder_name": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "investor_id",
+    "founder_id"
+  ]
+}

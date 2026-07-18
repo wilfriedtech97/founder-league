@@ -1,0 +1,42 @@
+{
+  "name": "Meeting",
+  "type": "object",
+  "properties": {
+    "investor_id": {
+      "type": "string"
+    },
+    "investor_name": {
+      "type": "string"
+    },
+    "founder_id": {
+      "type": "string"
+    },
+    "founder_name": {
+      "type": "string"
+    },
+    "scheduled_date": {
+      "type": "string"
+    },
+    "meeting_type": {
+      "type": "string",
+      "default": "Video Call"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "investor_id",
+    "founder_id"
+  ]
+}
