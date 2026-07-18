@@ -23,6 +23,12 @@
     "portfolio_url": {
       "type": "string"
     },
+    "demo_url": {
+      "type": "string"
+    },
+    "pitch": {
+      "type": "string"
+    },
     "location": {
       "type": "string"
     },

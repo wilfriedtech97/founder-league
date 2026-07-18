@@ -1,0 +1,31 @@
+{
+  "name": "TeamMember",
+  "type": "object",
+  "properties": {
+    "founder_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "github_url": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "founder_id",
+    "name"
+  ]
+}

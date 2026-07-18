@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Trophy, Github, Linkedin, Globe, Star, TrendingUp, Bot, Rocket,
-  Plus, Zap, Award, Activity, MessageSquare, Check, X
+  Trophy, Github, Linkedin, Globe, Star, TrendingUp, Rocket,
+  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
@@ -13,7 +13,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import VoiceAgent from '@/components/VoiceAgent';
+import ProfileEditModal from '@/components/founder/ProfileEditModal';
+import TeamManager from '@/components/founder/TeamManager';
+import AIChat from '@/components/founder/AIChat';
 
 export default function FounderDashboard() {
   const [profile, setProfile] = useState(null);
@@ -91,10 +93,19 @@ export default function FounderDashboard() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-white/50 mb-4">Your founder profile hasn't been created yet. Please wait for admin approval.</p>
-          <Button onClick={() => loadData()} className="bg-amber-400 text-black">Refresh</Button>
+      <div className="min-h-screen bg-black text-white">
+        <Navbar userRole="founder" />
+        <div className="pt-32 pb-12 px-4 text-center">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center mx-auto mb-6">
+            <Rocket className="w-10 h-10 text-black" />
+          </div>
+          <h1 className="text-3xl font-black mb-3">Create Your Founder Profile</h1>
+          <p className="text-white/50 mb-6 max-w-md mx-auto">Set up your profile to get your Founder Score, connect your accounts, upload your demo and pitch, and start receiving investment offers.</p>
+          <ProfileEditModal profile={null} onUpdated={loadData}>
+            <Button className="bg-amber-400 text-black hover:bg-amber-500 text-lg px-8 py-6 h-auto">
+              <Plus className="w-5 h-5 mr-2" /> Create Profile
+            </Button>
+          </ProfileEditModal>
         </div>
       </div>
     );
@@ -116,13 +127,18 @@ export default function FounderDashboard() {
 
       <div className="pt-24 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs px-2 py-1 rounded-full bg-amber-500/20 text-amber-300 font-medium">{profile.tag}</span>
-            {profile.verified && <span className="text-xs px-2 py-1 rounded-full bg-sky-500/20 text-sky-300 font-medium">✓ Verified</span>}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs px-2 py-1 rounded-full bg-amber-500/20 text-amber-300 font-medium">{profile.tag}</span>
+              {profile.verified && <span className="text-xs px-2 py-1 rounded-full bg-sky-500/20 text-sky-300 font-medium">✓ Verified</span>}
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black">{profile.full_name}</h1>
+            <p className="text-white/50">{profile.headline || profile.focus_area} · {profile.focus_area}</p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black">{profile.full_name}</h1>
-          <p className="text-white/50">{profile.headline || profile.focus_area} · {profile.focus_area}</p>
+          <ProfileEditModal profile={profile} onUpdated={loadData}>
+            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">Edit Profile</Button>
+          </ProfileEditModal>
         </motion.div>
 
         {/* Score Section */}
@@ -169,35 +185,18 @@ export default function FounderDashboard() {
         </div>
 
         {/* Links */}
+        {profile.bio && <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-3xl">{profile.bio}</p>}
         <div className="flex flex-wrap gap-3 mb-8">
           {profile.github_url && <a href={profile.github_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-colors text-sm"><Github className="w-4 h-4" /> GitHub</a>}
           {profile.linkedin_url && <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-colors text-sm"><Linkedin className="w-4 h-4" /> LinkedIn</a>}
           {profile.portfolio_url && <a href={profile.portfolio_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-colors text-sm"><Globe className="w-4 h-4" /> Portfolio</a>}
+          {profile.demo_url && <a href={profile.demo_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-500/10 border border-violet-500/20 hover:border-violet-500/40 transition-colors text-sm"><Video className="w-4 h-4 text-violet-400" /> Demo</a>}
+          {profile.pitch && <a href={profile.pitch} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-500/10 border border-violet-500/20 hover:border-violet-500/40 transition-colors text-sm"><FileText className="w-4 h-4 text-violet-400" /> Pitch</a>}
         </div>
 
-        {/* AI Founder Agent */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 p-8 rounded-2xl bg-gradient-to-br from-violet-500/10 to-transparent border border-violet-500/20">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-7 h-7 text-white" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold mb-1">Your AI Founder Agent</h2>
-              <p className="text-white/50 text-sm mb-4">Your personal AI representative that negotiates, answers investors, and defends your startup — autonomously.</p>
-              <div className="p-4 rounded-lg bg-black/30 border border-white/5">
-                <p className="text-sm text-white/70 italic">
-                  "{profile.full_name} has shipped {profile.products_shipped} AI products. GitHub activity places them in the top 5% of AI engineers.
-                  Revenue growth is strong. Probability of execution success: {profile.score_execution}%. Investment readiness: {profile.investment_readiness}%."
-                </p>
-              </div>
-              <div className="mt-4 flex items-center gap-3">
-                <Button className="bg-violet-500 hover:bg-violet-600 text-white">
-                  <MessageSquare className="w-4 h-4 mr-2" /> Chat with AI Agent
-                </Button>
-                <VoiceAgent text={`${profile.full_name} has shipped ${profile.products_shipped} AI products. GitHub activity places them in the top 5 percent of AI engineers. Revenue growth is strong. Probability of execution success: ${profile.score_execution} percent. Investment readiness: ${profile.investment_readiness} percent.`} />
-              </div>
-            </div>
-          </div>
+        {/* AI Agent Chat & Coaching */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <AIChat profile={profile} />
         </motion.div>
 
         {/* Projects */}
@@ -268,6 +267,14 @@ export default function FounderDashboard() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Team */}
+        <div id="team" className="mb-8">
+          <h2 className="text-2xl font-black mb-6 flex items-center gap-2">
+            <Users className="w-6 h-6 text-amber-400" /> Team
+          </h2>
+          <TeamManager founderId={profile.id} />
         </div>
 
         {/* Investment Offers */}
