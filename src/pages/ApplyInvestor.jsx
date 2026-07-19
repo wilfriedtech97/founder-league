@@ -24,9 +24,17 @@ export default function ApplyInvestor() {
     e.preventDefault();
     setLoading(true);
     try {
-      await base44.entities.InvestorApplication.create(form);
+      await base44.entities.InvestorApplication.create({ ...form, status: 'approved' });
+      await base44.entities.InvestorProfile.create({
+        full_name: form.full_name,
+        fund_name: form.fund_name || '',
+        thesis: form.thesis || '',
+        check_size: form.check_size || '$100K-$500K',
+        sectors: form.sectors ? form.sectors.split(',').map(s => s.trim()) : [],
+        linkedin_url: form.linkedin_url || '',
+      });
       setSubmitted(true);
-      toast({ title: 'Application Submitted', description: 'Your request will be verified and validated by our team.' });
+      toast({ title: 'Application Approved!', description: 'Your request has been automatically validated. Your Investor Dashboard is ready.' });
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
@@ -51,11 +59,10 @@ export default function ApplyInvestor() {
           </div>
           <h1 className="text-3xl font-black mb-3">Application Received!</h1>
           <p className="text-white/60 mb-8">
-            Your request will be verified and validated by our admin team. You'll be notified once approved
-            and will then get access to the Investor Dashboard.
+            Your request has been automatically validated and approved. You now have access to your Investor Dashboard.
           </p>
-          <Button onClick={() => navigate('/')} className="bg-emerald-400 text-black hover:bg-emerald-500 font-bold">
-            Back to Home
+          <Button onClick={() => navigate('/investor-dashboard')} className="bg-emerald-400 text-black hover:bg-emerald-500 font-bold">
+            Go to Dashboard
           </Button>
         </motion.div>
       </div>

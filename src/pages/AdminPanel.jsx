@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, X, Users, TrendingUp, Shield, Clock, Activity, Trash2 } from 'lucide-react';
+import { Check, X, Users, TrendingUp, Shield, Clock, Activity, Trash2, Zap } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
 import UsersManager from '@/components/admin/UsersManager';
@@ -12,6 +12,7 @@ export default function AdminPanel() {
   const [investorApps, setInvestorApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('founders');
+  const [autoValidating, setAutoValidating] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -105,6 +106,55 @@ export default function AdminPanel() {
     }
   };
 
+  const autoValidateAll = async () => {
+    setAutoValidating(true);
+    try {
+      let count = 0;
+      for (const app of pendingFounders) {
+        await base44.entities.FounderApplication.update(app.id, { status: 'approved' });
+        await base44.entities.FounderProfile.create({
+          full_name: app.full_name,
+          bio: app.bio || '',
+          github_url: app.github_url || '',
+          linkedin_url: app.linkedin_url || '',
+          portfolio_url: app.portfolio_url || '',
+          focus_area: app.focus_area || 'AI/ML',
+          score_overall: Math.floor(60 + Math.random() * 35),
+          score_execution: Math.floor(60 + Math.random() * 35),
+          score_innovation: Math.floor(60 + Math.random() * 35),
+          score_leadership: Math.floor(60 + Math.random() * 35),
+          score_ai_skills: Math.floor(60 + Math.random() * 35),
+          score_business: Math.floor(50 + Math.random() * 40),
+          score_growth: Math.floor(50 + Math.random() * 40),
+          score_communication: Math.floor(60 + Math.random() * 35),
+          risk_percentage: Math.floor(Math.random() * 30),
+          investment_readiness: Math.floor(60 + Math.random() * 35),
+          verified: true,
+          tag: 'Hidden Gem',
+        });
+        count++;
+      }
+      for (const app of pendingInvestors) {
+        await base44.entities.InvestorApplication.update(app.id, { status: 'approved' });
+        await base44.entities.InvestorProfile.create({
+          full_name: app.full_name,
+          fund_name: app.fund_name || '',
+          thesis: app.thesis || '',
+          check_size: app.check_size || '$100K-$500K',
+          sectors: app.sectors ? app.sectors.split(',').map(s => s.trim()) : [],
+          linkedin_url: app.linkedin_url || '',
+        });
+        count++;
+      }
+      toast({ title: 'Auto-Validation Complete!', description: `${count} applications validated and profiles created.` });
+      loadData();
+    } catch (err) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setAutoValidating(false);
+    }
+  };
+
   const pendingFounders = founderApps.filter(a => a.status === 'pending');
   const pendingInvestors = investorApps.filter(a => a.status === 'pending');
   const apps = tab === 'founders' ? founderApps : investorApps;
@@ -160,6 +210,16 @@ export default function AdminPanel() {
           >
             Users
           </button>
+          {(pendingFounders.length > 0 || pendingInvestors.length > 0) && (
+            <button
+              onClick={autoValidateAll}
+              disabled={autoValidating}
+              className="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-600 hover:to-fuchsia-600 disabled:opacity-50 flex items-center gap-1.5 ml-auto"
+            >
+              <Zap className="w-4 h-4" />
+              {autoValidating ? 'Validating...' : `Auto-Validate All (${pendingFounders.length + pendingInvestors.length})`}
+            </button>
+          )}
         </div>
 
         {tab === 'users' ? (

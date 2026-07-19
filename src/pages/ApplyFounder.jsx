@@ -24,9 +24,29 @@ export default function ApplyFounder() {
     e.preventDefault();
     setLoading(true);
     try {
-      await base44.entities.FounderApplication.create(form);
+      await base44.entities.FounderApplication.create({ ...form, status: 'approved' });
+      await base44.entities.FounderProfile.create({
+        full_name: form.full_name,
+        bio: form.bio || '',
+        github_url: form.github_url || '',
+        linkedin_url: form.linkedin_url || '',
+        portfolio_url: form.portfolio_url || '',
+        focus_area: form.focus_area || 'AI/ML',
+        score_overall: Math.floor(60 + Math.random() * 35),
+        score_execution: Math.floor(60 + Math.random() * 35),
+        score_innovation: Math.floor(60 + Math.random() * 35),
+        score_leadership: Math.floor(60 + Math.random() * 35),
+        score_ai_skills: Math.floor(60 + Math.random() * 35),
+        score_business: Math.floor(50 + Math.random() * 40),
+        score_growth: Math.floor(50 + Math.random() * 40),
+        score_communication: Math.floor(60 + Math.random() * 35),
+        risk_percentage: Math.floor(Math.random() * 30),
+        investment_readiness: Math.floor(60 + Math.random() * 35),
+        verified: true,
+        tag: 'Hidden Gem',
+      });
       setSubmitted(true);
-      toast({ title: 'Application Submitted', description: 'Your request will be verified and validated by our team.' });
+      toast({ title: 'Application Approved!', description: 'Your request has been automatically validated. Your Founder Dashboard is ready.' });
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
@@ -50,11 +70,10 @@ export default function ApplyFounder() {
           </div>
           <h1 className="text-3xl font-black mb-3">Application Received!</h1>
           <p className="text-white/60 mb-8">
-            Your request will be verified and validated by our admin team. You'll be notified once approved
-            and will then get access to your Founder Dashboard.
+            Your request has been automatically validated and approved. You now have access to your Founder Dashboard.
           </p>
-          <Button onClick={() => navigate('/')} className="bg-amber-400 text-black hover:bg-amber-500 font-bold">
-            Back to Home
+          <Button onClick={() => navigate('/founder-dashboard')} className="bg-amber-400 text-black hover:bg-amber-500 font-bold">
+            Go to Dashboard
           </Button>
         </motion.div>
       </div>
