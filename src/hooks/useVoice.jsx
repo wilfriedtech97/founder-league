@@ -18,24 +18,29 @@ export function useVoice(defaultVoice = 'storm') {
     setPaused(false);
     setLoading(true);
     try {
-      const result = await base44.integrations.Core.GenerateSpeech({
+      const response = await base44.functions.invoke('elevenlabsTTS', {
         text: text.slice(0, 5000),
         voice: voice || defaultVoice,
       });
 
-      const audio = new Audio(result.url);
+      const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      const audio = new Audio(audioUrl);
       audioRef.current = audio;
       setSpeaking(true);
 
       audio.onended = () => {
         setSpeaking(false);
         setPaused(false);
+        URL.revokeObjectURL(audioUrl);
         audioRef.current = null;
       };
 
       audio.onerror = () => {
         setSpeaking(false);
         setPaused(false);
+        URL.revokeObjectURL(audioUrl);
         audioRef.current = null;
       };
 
