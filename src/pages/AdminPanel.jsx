@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, X, Users, TrendingUp, Shield, Clock, Activity } from 'lucide-react';
+import { Check, X, Users, TrendingUp, Shield, Clock, Activity, Trash2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
+import UsersManager from '@/components/admin/UsersManager';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -89,6 +90,21 @@ export default function AdminPanel() {
     }
   };
 
+  const handleDeleteRejectedUser = async (app) => {
+    if (!window.confirm(`Delete ${app.full_name}'s user account? This cannot be undone.`)) return;
+    try {
+      const matchingUsers = await base44.entities.User.filter({ email: app.email });
+      if (matchingUsers.length > 0) {
+        await base44.entities.User.delete(matchingUsers[0].id);
+        toast({ title: 'User account deleted', description: `${app.full_name}'s account was removed.` });
+      } else {
+        toast({ title: 'No user found', description: `No account with email ${app.email}.` });
+      }
+    } catch (err) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    }
+  };
+
   const pendingFounders = founderApps.filter(a => a.status === 'pending');
   const pendingInvestors = investorApps.filter(a => a.status === 'pending');
   const apps = tab === 'founders' ? founderApps : investorApps;
@@ -138,9 +154,17 @@ export default function AdminPanel() {
           >
             Investor Apps ({pendingInvestors.length} pending)
           </button>
+          <button
+            onClick={() => setTab('users')}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all ${tab === 'users' ? 'bg-sky-400 text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+          >
+            Users
+          </button>
         </div>
 
-        {loading ? (
+        {tab === 'users' ? (
+          <UsersManager />
+        ) : loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-4 border-white/10 border-t-amber-400 rounded-full animate-spin" />
           </div>
@@ -204,6 +228,17 @@ export default function AdminPanel() {
                         onClick={() => handleReject(app, tab === 'founders' ? 'founder' : 'investor')}
                       >
                         <X className="w-4 h-4 mr-1" /> Reject
+                      </Button>
+                    </div>
+                  )}
+                  {app.status === 'rejected' && (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteRejectedUser(app)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" /> Delete User
                       </Button>
                     </div>
                   )}
