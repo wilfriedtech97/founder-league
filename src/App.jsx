@@ -20,6 +20,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import JudgeAIPage from '@/pages/JudgeAIPage';
 import DefenseSystem from '@/pages/DefenseSystem';
+import MatchSimulation from '@/pages/MatchSimulation';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         <Route path="/investor-dashboard" element={<InvestorDashboard />} />
         <Route path="/judge" element={<JudgeAIPage />} />
         <Route path="/defense" element={<DefenseSystem />} />
+        <Route path="/match" element={<MatchSimulation />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
