@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import SimulationResults from '@/components/match/SimulationResults';
 import InvestmentRecommendation from '@/components/match/InvestmentRecommendation';
 import FounderTimeline from '@/components/match/FounderTimeline';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Target, Search, Zap, Loader2, Swords, TrendingUp } from 'lucide-react';
 
 export default function MatchSimulation() {
@@ -19,6 +20,7 @@ export default function MatchSimulation() {
   const [simulating, setSimulating] = useState(false);
   const [results, setResults] = useState(null);
   const { toast } = useToast();
+  const userRole = useUserRole();
 
   useEffect(() => {
     loadData();
@@ -169,7 +171,7 @@ Be data-driven and realistic. Use the founder's actual scores and metrics.`;
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+      <Navbar userRole={userRole} />
 
       <div className="pt-24 pb-12 px-4 sm:px-6 max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
 import RankingBoard from '@/components/ranking/RankingBoard';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Trophy, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,6 +14,7 @@ export default function AutoRanking() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
+  const userRole = useUserRole();
 
   useEffect(() => {
     loadData();
@@ -99,7 +101,7 @@ Return adjusted scores for each founder. Keep scores within ±10 of their curren
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+      <Navbar userRole={userRole} />
 
       <div className="pt-24 pb-12 px-4 sm:px-6 max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">

@@ -6,6 +6,7 @@ import ScoreRing from '@/components/ScoreRing';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import JudgeAI from '@/components/judge/JudgeAI';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Scale, Search, Zap, Rocket } from 'lucide-react';
 
 export default function JudgeAIPage() {
@@ -16,6 +17,7 @@ export default function JudgeAIPage() {
   const [type, setType] = useState('founder');
   const [judgeTarget, setJudgeTarget] = useState(null);
   const { toast } = useToast();
+  const userRole = useUserRole();
 
   useEffect(() => {
     loadData();
@@ -51,7 +53,7 @@ export default function JudgeAIPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+      <Navbar userRole={userRole} />
 
       <div className="pt-24 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">

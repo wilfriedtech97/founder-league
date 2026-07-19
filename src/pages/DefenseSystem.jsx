@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import DefenseChat from '@/components/defense/DefenseChat';
 import DebateArena from '@/components/defense/DebateArena';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Shield, Swords, Search, Zap, Check } from 'lucide-react';
 
 export default function DefenseSystem() {
@@ -19,6 +20,7 @@ export default function DefenseSystem() {
   const [debateB, setDebateB] = useState(null);
   const [topic, setTopic] = useState('');
   const { toast } = useToast();
+  const userRole = useUserRole();
 
   useEffect(() => {
     loadData();
@@ -62,7 +64,7 @@ export default function DefenseSystem() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+      <Navbar userRole={userRole} />
 
       <div className="pt-24 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
