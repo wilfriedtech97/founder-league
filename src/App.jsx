@@ -22,6 +22,8 @@ import JudgeAIPage from '@/pages/JudgeAIPage';
 import DefenseSystem from '@/pages/DefenseSystem';
 import MatchSimulation from '@/pages/MatchSimulation';
 import AutoRanking from '@/pages/AutoRanking';
+import FoundersScore from '@/pages/FoundersScore';
+import RoleGuard from '@/components/RoleGuard';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -59,13 +61,14 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/founder-dashboard" element={<FounderDashboard />} />
-        <Route path="/investor-dashboard" element={<InvestorDashboard />} />
+        <Route path="/founders-score" element={<FoundersScore />} />
         <Route path="/judge" element={<JudgeAIPage />} />
         <Route path="/defense" element={<DefenseSystem />} />
         <Route path="/match" element={<MatchSimulation />} />
         <Route path="/rankings" element={<AutoRanking />} />
+        <Route path="/admin" element={<RoleGuard allowedRoles={['admin']}><AdminPanel /></RoleGuard>} />
+        <Route path="/founder-dashboard" element={<RoleGuard allowedRoles={['founder', 'admin']}><FounderDashboard /></RoleGuard>} />
+        <Route path="/investor-dashboard" element={<RoleGuard allowedRoles={['investor', 'admin']}><InvestorDashboard /></RoleGuard>} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

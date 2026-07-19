@@ -18,7 +18,7 @@ export function useUserRole() {
 
         if (founderProfiles.length > 0) setUserRole('founder');
         else if (investorProfiles.length > 0) setUserRole('investor');
-        else setUserRole(null);
+        else setUserRole('user');
       } catch {
         setUserRole(null);
       }

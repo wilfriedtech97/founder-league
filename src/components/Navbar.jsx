@@ -44,7 +44,15 @@ export default function Navbar({ userRole }) {
     { label: 'Rankings', path: '/rankings', icon: Trophy },
   ];
 
-  const links = userRole === 'founder' ? founderLinks : userRole === 'investor' ? investorLinks : userRole === 'admin' ? adminLinks : [];
+  const userLinks = [
+    { label: 'Founders Score', path: '/founders-score' },
+    { label: 'Judge AI', path: '/judge', icon: Scale },
+    { label: 'Defense', path: '/defense', icon: Swords },
+    { label: 'Match Sim', path: '/match', icon: Target },
+    { label: 'Rankings', path: '/rankings', icon: Trophy },
+  ];
+
+  const links = userRole === 'founder' ? founderLinks : userRole === 'investor' ? investorLinks : userRole === 'admin' ? adminLinks : userRole === 'user' ? userLinks : [];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/70 border-b border-white/10">
