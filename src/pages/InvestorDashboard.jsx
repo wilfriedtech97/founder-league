@@ -13,8 +13,10 @@ import RankingSection from '@/components/investor/RankingSection';
 import FounderCard from '@/components/investor/FounderCard';
 import ProjectCard from '@/components/investor/ProjectCard';
 import CompareFounders from '@/components/investor/CompareFounders';
+import CompareProjects from '@/components/investor/CompareProjects';
 import MeetingScheduler from '@/components/investor/MeetingScheduler';
 import FounderReportModal from '@/components/investor/FounderReportModal';
+import ProjectReportModal from '@/components/investor/ProjectReportModal';
 import ProjectAgent from '@/components/project/ProjectAgent';
 import JudgeAI from '@/components/judge/JudgeAI';
 import {
@@ -34,11 +36,16 @@ export default function InvestorDashboard() {
   const [search, setSearch] = useState('');
   const [searchType, setSearchType] = useState('founders');
   const [offerModal, setOfferModal] = useState(null);
+  const [offerType, setOfferType] = useState('founder');
   const [offerForm, setOfferForm] = useState({ amount: '', valuation: '', equity: '', message: '' });
   const [compareList, setCompareList] = useState([]);
   const [showCompare, setShowCompare] = useState(false);
+  const [projectCompareList, setProjectCompareList] = useState([]);
+  const [showProjectCompare, setShowProjectCompare] = useState(false);
   const [meetingFounder, setMeetingFounder] = useState(null);
+  const [meetingProject, setMeetingProject] = useState(null);
   const [reportFounder, setReportFounder] = useState(null);
+  const [reportProject, setReportProject] = useState(null);
   const [projectAgent, setProjectAgent] = useState(null);
   const [judgeTarget, setJudgeTarget] = useState(null);
   const [judgeType, setJudgeType] = useState('founder');
@@ -77,13 +84,26 @@ export default function InvestorDashboard() {
   const handleSendOffer = async (e) => {
     e.preventDefault();
     try {
-      await base44.entities.InvestmentOffer.create({
-        founder_id: offerModal.id, founder_name: offerModal.full_name,
-        investor_id: profile?.id || '', investor_name: profile?.full_name || '',
-        amount: offerForm.amount, valuation: offerForm.valuation, equity: offerForm.equity,
-        message: offerForm.message, status: 'pending',
-      });
-      toast({ title: 'Offer sent!', description: `Investment offer sent to ${offerModal.full_name}.` });
+      const offerData = {
+        investor_id: profile?.id || '',
+        investor_name: profile?.full_name || '',
+        amount: offerForm.amount,
+        valuation: offerForm.valuation,
+        equity: offerForm.equity,
+        message: offerForm.message,
+        status: 'pending',
+      };
+      if (offerType === 'project') {
+        offerData.project_id = offerModal.id;
+        offerData.project_name = offerModal.name;
+        offerData.founder_id = offerModal.founder_id || '';
+        offerData.founder_name = offerModal.founder_name || '';
+      } else {
+        offerData.founder_id = offerModal.id;
+        offerData.founder_name = offerModal.full_name;
+      }
+      await base44.entities.InvestmentOffer.create(offerData);
+      toast({ title: 'Offer sent!', description: `Investment offer sent for ${offerType === 'project' ? offerModal.name : offerModal.full_name}.` });
       setOfferModal(null);
       setOfferForm({ amount: '', valuation: '', equity: '', message: '' });
       loadData();
@@ -116,6 +136,17 @@ export default function InvestorDashboard() {
     } else {
       setCompareList([...compareList, founder]);
       toast({ title: 'Added to comparison', description: `${compareList.length + 1}/3 selected` });
+    }
+  };
+
+  const addToProjectCompare = (project) => {
+    if (projectCompareList.find(p => p.id === project.id)) {
+      setProjectCompareList(projectCompareList.filter(p => p.id !== project.id));
+    } else if (projectCompareList.length >= 3) {
+      toast({ title: 'Max 3 projects', description: 'You can compare up to 3 projects at a time.', variant: 'destructive' });
+    } else {
+      setProjectCompareList([...projectCompareList, project]);
+      toast({ title: 'Added to comparison', description: `${projectCompareList.length + 1}/3 selected` });
     }
   };
 
@@ -152,8 +183,18 @@ export default function InvestorDashboard() {
       isWatchlisted={watchlist.some(w => w.founder_id === founder.id)}
       onToggleWatchlist={toggleWatchlist} onCompare={addToCompare}
       onScheduleMeeting={(f) => setMeetingFounder(f)} onViewReport={(f) => setReportFounder(f)}
-      onInvest={(f) => setOfferModal(f)}
+      onInvest={(f) => { setOfferModal(f); setOfferType('founder'); }}
       onJudge={(f) => { setJudgeTarget(f); setJudgeType('founder'); }} />
+  );
+
+  const renderProjectCard = (project, rank) => (
+    <ProjectCard key={project.id} project={project} rank={rank}
+      onAskProject={setProjectAgent}
+      onJudge={(p) => { setJudgeTarget(p); setJudgeType('project'); }}
+      onCompare={addToProjectCompare}
+      onReport={setReportProject}
+      onMeeting={setMeetingProject}
+      onInvest={(p) => { setOfferModal(p); setOfferType('project'); }} />
   );
 
   return (
@@ -190,7 +231,7 @@ export default function InvestorDashboard() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {searchType === 'founders'
                   ? searchResults.map((f, i) => renderFounderCard(f, i + 1))
-                  : searchResults.map((p, i) => <ProjectCard key={p.id} project={p} rank={i + 1} onAskProject={setProjectAgent} onJudge={(p) => { setJudgeTarget(p); setJudgeType('project'); }} />)}
+                  : searchResults.map((p, i) => renderProjectCard(p, i + 1))}
               </div>
             </div>
           )}
@@ -212,13 +253,29 @@ export default function InvestorDashboard() {
           </div>
         )}
 
+        {projectCompareList.length > 0 && (
+          <div className="mb-8 p-4 rounded-xl bg-sky-500/10 border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <GitCompare className="w-5 h-5 text-sky-400" />
+              <span className="text-sm font-medium">{projectCompareList.length} project{projectCompareList.length !== 1 ? 's' : ''} selected</span>
+              <div className="flex gap-1 flex-wrap">
+                {projectCompareList.map(p => <span key={p.id} className="text-xs px-2 py-0.5 rounded-full bg-white/10">{p.name}</span>)}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => setShowProjectCompare(true)} disabled={projectCompareList.length < 2} size="sm" className="bg-sky-500 text-white">Compare Now</Button>
+              <Button onClick={() => setProjectCompareList([])} size="sm" variant="outline" className="border-white/20 text-white">Clear</Button>
+            </div>
+          </div>
+        )}
+
         {!search && (
           <>
             <RankingSection title="Top Founders" icon={Trophy} iconColor="text-amber-400" items={topFounders} renderItem={renderFounderCard} />
             <RankingSection title="Hidden Gems" icon={Sparkles} iconColor="text-violet-400" items={hiddenGems} renderItem={renderFounderCard} />
             <RankingSection title="Fastest Growing" icon={TrendingUp} iconColor="text-emerald-400" items={fastestGrowing} renderItem={renderFounderCard} />
             <RankingSection title="Highest Founder Score" icon={Award} iconColor="text-amber-400" items={topFounders} renderItem={renderFounderCard} />
-            <RankingSection title="Best AI Products" icon={Rocket} iconColor="text-sky-400" items={bestProducts} renderItem={(p, rank) => <ProjectCard key={p.id} project={p} rank={rank} onAskProject={setProjectAgent} onJudge={(p) => { setJudgeTarget(p); setJudgeType('project'); }} />} />
+            <RankingSection title="All Projects" icon={Rocket} iconColor="text-sky-400" items={projects} renderItem={renderProjectCard} />
             <RankingSection title="Most Active GitHub" icon={Activity} iconColor="text-white" items={mostActiveGithub} renderItem={renderFounderCard} />
             <RankingSection title="Highest Revenue" icon={DollarSign} iconColor="text-emerald-400" items={highestRevenue} renderItem={renderFounderCard} />
             <RankingSection title="Most Innovative" icon={Lightbulb} iconColor="text-amber-400" items={mostInnovative} renderItem={renderFounderCard} />
@@ -285,11 +342,25 @@ export default function InvestorDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setOfferModal(null)}>
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()} className="max-w-md w-full p-8 rounded-2xl bg-zinc-900 border border-white/10">
             <div className="flex items-center gap-3 mb-6">
-              <ScoreRing score={offerModal.score_overall} size={60} />
-              <div>
-                <h3 className="text-xl font-bold">{offerModal.full_name}</h3>
-                <p className="text-white/50 text-sm">{offerModal.focus_area}</p>
-              </div>
+              {offerType === 'project' ? (
+                <>
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center font-black text-white text-xl">
+                    {offerModal.name?.charAt(0) || '?'}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">{offerModal.name}</h3>
+                    <p className="text-white/50 text-sm">{offerModal.category} · by {offerModal.founder_name || 'Unknown'}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <ScoreRing score={offerModal.score_overall} size={60} />
+                  <div>
+                    <h3 className="text-xl font-bold">{offerModal.full_name}</h3>
+                    <p className="text-white/50 text-sm">{offerModal.focus_area}</p>
+                  </div>
+                </>
+              )}
             </div>
             <form onSubmit={handleSendOffer} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -310,11 +381,20 @@ export default function InvestorDashboard() {
       {showCompare && compareList.length >= 2 && (
         <CompareFounders founders={compareList} onClose={() => setShowCompare(false)} />
       )}
+      {showProjectCompare && projectCompareList.length >= 2 && (
+        <CompareProjects projects={projectCompareList} onClose={() => setShowProjectCompare(false)} />
+      )}
       {meetingFounder && (
         <MeetingScheduler founder={meetingFounder} investor={profile} onClose={() => setMeetingFounder(null)} onScheduled={loadData} />
       )}
+      {meetingProject && (
+        <MeetingScheduler founder={{ id: meetingProject.founder_id, full_name: meetingProject.founder_name || 'Founder', focus_area: meetingProject.category, score_overall: meetingProject.score_overall }} investor={profile} onClose={() => setMeetingProject(null)} onScheduled={loadData} />
+      )}
       {reportFounder && (
         <FounderReportModal founder={reportFounder} projects={projects} onClose={() => setReportFounder(null)} />
+      )}
+      {reportProject && (
+        <ProjectReportModal project={reportProject} onClose={() => setReportProject(null)} />
       )}
       {projectAgent && (
         <ProjectAgent project={projectAgent} onClose={() => setProjectAgent(null)} />
