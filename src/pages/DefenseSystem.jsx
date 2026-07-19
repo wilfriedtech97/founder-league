@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
+import { useEntitySync } from '@/hooks/useEntitySync';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -11,8 +11,6 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { Shield, Swords, Search, Zap, Check } from 'lucide-react';
 
 export default function DefenseSystem() {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('defense');
   const [search, setSearch] = useState('');
   const [defenseProject, setDefenseProject] = useState(null);
@@ -21,22 +19,10 @@ export default function DefenseSystem() {
   const [topic, setTopic] = useState('');
   const { toast } = useToast();
   const userRole = useUserRole();
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const allProjects = await base44.entities.Project.filter({}, '-score_overall', 50);
-      setProjects(allProjects);
-    } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: projects, loading } = useEntitySync('Project', {
+    limit: 50,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
 
   if (loading) {
     return (

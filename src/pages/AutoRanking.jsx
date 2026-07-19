@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
+import { useEntitySync } from '@/hooks/useEntitySync';
 import RankingBoard from '@/components/ranking/RankingBoard';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Trophy, RefreshCw, Loader2 } from 'lucide-react';
@@ -9,30 +10,18 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function AutoRanking() {
-  const [founders, setFounders] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
   const userRole = useUserRole();
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const allFounders = await base44.entities.FounderProfile.filter({}, '-score_overall', 100);
-      const allProjects = await base44.entities.Project.filter({}, '-score_overall', 100);
-      setFounders(allFounders);
-      setProjects(allProjects);
-    } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: founders, loading: loadingFounders, refresh: refreshFounders } = useEntitySync('FounderProfile', {
+    limit: 100,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
+  const { data: projects, loading: loadingProjects, refresh: refreshProjects } = useEntitySync('Project', {
+    limit: 100,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
+  const loading = loadingFounders || loadingProjects;
 
   const refreshRankings = async () => {
     setRefreshing(true);
@@ -91,7 +80,8 @@ Return adjusted scores for each founder. Keep scores within ±10 of their curren
       }
 
       toast({ title: 'Rankings updated!', description: `${updates.length} founders re-scored by AI.` });
-      await loadData();
+      await refreshFounders();
+      await refreshProjects();
     } catch (err) {
       toast({ title: 'Refresh Error', description: err.message, variant: 'destructive' });
     } finally {

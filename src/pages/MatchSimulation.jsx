@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
+import { useEntitySync } from '@/hooks/useEntitySync';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -12,33 +13,21 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { Target, Search, Zap, Loader2, Swords, TrendingUp } from 'lucide-react';
 
 export default function MatchSimulation() {
-  const [founders, setFounders] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedFounder, setSelectedFounder] = useState(null);
   const [simulating, setSimulating] = useState(false);
   const [results, setResults] = useState(null);
   const { toast } = useToast();
   const userRole = useUserRole();
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const allFounders = await base44.entities.FounderProfile.filter({}, '-score_overall', 50);
-      const allProjects = await base44.entities.Project.filter({}, '-score_overall', 50);
-      setFounders(allFounders);
-      setProjects(allProjects);
-    } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: founders, loading: loadingFounders } = useEntitySync('FounderProfile', {
+    limit: 50,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
+  const { data: projects, loading: loadingProjects } = useEntitySync('Project', {
+    limit: 50,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
+  const loading = loadingFounders || loadingProjects;
 
   const runSimulation = async () => {
     if (!selectedFounder) return;

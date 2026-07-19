@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
+import { useEntitySync } from '@/hooks/useEntitySync';
 import ScoreRing from '@/components/ScoreRing';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,34 +10,20 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { Scale, Search, Zap, Rocket } from 'lucide-react';
 
 export default function JudgeAIPage() {
-  const [founders, setFounders] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [type, setType] = useState('founder');
   const [judgeTarget, setJudgeTarget] = useState(null);
   const { toast } = useToast();
   const userRole = useUserRole();
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const [allFounders, allProjects] = await Promise.all([
-        base44.entities.FounderProfile.filter({}, '-score_overall', 100),
-        base44.entities.Project.filter({}, '-score_overall', 50),
-      ]);
-      setFounders(allFounders);
-      setProjects(allProjects);
-    } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: founders, loading: loadingFounders } = useEntitySync('FounderProfile', {
+    limit: 100,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
+  const { data: projects, loading: loadingProjects } = useEntitySync('Project', {
+    limit: 50,
+    onError: (err) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
+  });
+  const loading = loadingFounders || loadingProjects;
 
   const results = type === 'founder'
     ? founders.filter(f => !search || f.full_name?.toLowerCase().includes(search.toLowerCase()) || f.focus_area?.toLowerCase().includes(search.toLowerCase()))
