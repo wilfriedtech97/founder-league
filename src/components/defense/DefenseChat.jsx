@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { Send, Loader2, Volume2, Shield, Zap } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useVoice } from '@/hooks/useVoice';
@@ -60,7 +61,7 @@ RESPONSE STYLE:
 - Be confident, sharp, and data-driven
 - The AI literally argues for itself — no hedging
 - Each data point on its own line
-- Maximum 150 words per response`;
+- Maximum 150 words per response${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const sendMessage = async (overrideInput) => {

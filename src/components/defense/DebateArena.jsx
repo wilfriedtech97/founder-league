@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { Swords, Loader2, Volume2, Gavel, Crown, Zap } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useVoice } from '@/hooks/useVoice';
@@ -42,7 +43,7 @@ ${roundType === 'closing' ? 'Make your CLOSING STATEMENT. Summarize why you are 
 
 ${previousArgs ? `PREVIOUS ARGUMENTS:\n${previousArgs}\n` : ''}
 
-Be persuasive, data-driven, and aggressive. Speak in first person as the project. Maximum 120 words.`;
+Be persuasive, data-driven, and aggressive. Speak in first person as the project. Maximum 120 words.${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const generateArgument = async (project, opponent, roundType, previousArgs) => {

@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { X, Scale, Loader2, Volume2, Send, CheckCircle2, AlertTriangle, Shield } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,7 +84,7 @@ SCORING RULES:
 - Below 30 = poor
 - Base scores on verifiable data, not claims
 - Identify specific strengths and weaknesses
-- Flag any red flags or concerns`;
+- Flag any red flags or concerns${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const runEvaluation = async () => {

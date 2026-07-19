@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send, Loader2, Bot, GraduationCap, Volume2 } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
 
 export default function AIChat({ profile }) {
@@ -24,7 +25,7 @@ Profile: Focus area ${profile.focus_area}, Stage ${profile.stage}. Founder Score
 Scores: Execution ${profile.score_execution}, Innovation ${profile.score_innovation}, Leadership ${profile.score_leadership}, AI Skills ${profile.score_ai_skills}, Business ${profile.score_business}, Growth ${profile.score_growth}, Communication ${profile.score_communication}.
 Stats: ${profile.products_shipped} products shipped, ${profile.commits_per_month} commits/month, ${profile.hackathon_wins} hackathon wins, ${profile.followers} followers.
 Investment readiness: ${profile.investment_readiness}%. Risk: ${profile.risk_percentage}%.
-${mode === 'coaching' ? 'As a coach, give specific, actionable advice to improve weak areas and leverage strengths.' : 'As their agent, help with investor questions, negotiation strategy, and startup advice.'}`;
+${mode === 'coaching' ? 'As a coach, give specific, actionable advice to improve weak areas and leverage strengths.' : 'As their agent, help with investor questions, negotiation strategy, and startup advice.'}${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const sendMessage = async (overrideInput) => {

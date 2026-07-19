@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { X, Send, Loader2, Volume2, Zap } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -66,7 +67,7 @@ RESPONSE STYLE:
 - Be confident, data-driven, and compelling
 - Use your actual metrics to back up claims
 - Keep responses concise but impactful — each point on its own line
-- If asked about something you don't have exact data for, make reasonable estimates based on your category and stage`;
+- If asked about something you don't have exact data for, make reasonable estimates based on your category and stage${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const sendMessage = async (overrideInput) => {

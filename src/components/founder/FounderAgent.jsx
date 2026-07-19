@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { Send, Loader2, Bot, GraduationCap, Volume2, FileText, TrendingUp, Target, MessageSquare, Check, X } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
 
 export default function FounderAgent({ profile, projects, onUpdated }) {
@@ -81,7 +82,7 @@ RESPONSE STYLE:
 - Use punchy, data-rich format with specific numbers and percentages
 - Each point on its own line for maximum impact
 - Be confident, professional, and data-driven
-- Example: "${profile.full_name} has shipped ${profile.products_shipped} AI products. GitHub activity places them in the top 5% of AI engineers. Probability of execution success: ${profile.score_execution}%. Investment readiness: ${profile.investment_readiness}%."`;
+- Example: "${profile.full_name} has shipped ${profile.products_shipped} AI products. GitHub activity places them in the top 5% of AI engineers. Probability of execution success: ${profile.score_execution}%. Investment readiness: ${profile.investment_readiness}%."${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const sendMessage = async (overrideInput) => {

@@ -8,6 +8,7 @@ import {
   DollarSign, Shield, FileSearch, Briefcase, Sparkles, GitCompare, Handshake
 } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
+import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
 
 export default function AIScout({ profile, founders, projects }) {
@@ -70,7 +71,7 @@ RESPONSE STYLE:
 - For ROI predictions, provide estimated ranges with reasoning
 - For risk analysis, identify specific risk factors with percentages
 - Be concise but thorough — investors want actionable insights fast
-- When an investor states a budget, immediately match founders to that budget`;
+- When an investor states a budget, immediately match founders to that budget${AI_FORMATTING_DIRECTIVE}`;
   };
 
   const sendMessage = async (overrideInput) => {
