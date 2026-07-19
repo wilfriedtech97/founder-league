@@ -48,20 +48,14 @@ export function useVoice(defaultVoice = 'storm') {
         voice: voice || defaultVoice,
       });
 
-      // Handle both ArrayBuffer and binary string responses
-      const rawData = response.data;
-      let audioBuffer;
-      if (rawData instanceof ArrayBuffer) {
-        audioBuffer = rawData;
-      } else if (rawData instanceof Uint8Array) {
-        audioBuffer = rawData.buffer;
-      } else if (typeof rawData === 'string') {
-        const bytes = new Uint8Array(rawData.length);
-        for (let i = 0; i < rawData.length; i++) bytes[i] = rawData.charCodeAt(i) & 0xff;
-        audioBuffer = bytes.buffer;
-      } else {
-        audioBuffer = rawData;
-      }
+      // Backend returns { audio: "<base64>" } JSON to survive transport
+      const base64Audio = response.data?.audio;
+      if (!base64Audio) throw new Error('No audio in response');
+
+      const binaryString = atob(base64Audio);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+      const audioBuffer = bytes.buffer;
 
       const audioBlob = new Blob([audioBuffer], { type: 'audio/mpeg' });
       const audioUrl = URL.createObjectURL(audioBlob);

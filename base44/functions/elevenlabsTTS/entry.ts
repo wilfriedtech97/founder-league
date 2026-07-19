@@ -32,6 +32,8 @@ Deno.serve(async (req) => {
       .trim()
       .slice(0, 5000);
 
+    let audioBuffer;
+
     try {
       const audio = await elevenlabs.textToSpeech.convert(voiceId, {
         text: normalizedText,
@@ -45,10 +47,33 @@ Deno.serve(async (req) => {
         },
       });
 
-      return new Response(audio, {
-        status: 200,
-        headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' },
-      });
+      // Convert the stream/buffer to ArrayBuffer for base64 encoding
+      if (audio instanceof ArrayBuffer) {
+        audioBuffer = audio;
+      } else if (audio instanceof Uint8Array) {
+        audioBuffer = audio.buffer;
+      } else if (typeof audio === 'string') {
+        const bytes = new Uint8Array(audio.length);
+        for (let i = 0; i < audio.length; i++) bytes[i] = audio.charCodeAt(i) & 0xff;
+        audioBuffer = bytes.buffer;
+      } else {
+        // Stream/ReadableStream — read it into a buffer
+        const reader = audio.getReader();
+        const chunks = [];
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+        }
+        const totalLength = chunks.reduce((acc, c) => acc + c.length, 0);
+        const merged = new Uint8Array(totalLength);
+        let offset = 0;
+        for (const c of chunks) {
+          merged.set(c, offset);
+          offset += c.length;
+        }
+        audioBuffer = merged.buffer;
+      }
     } catch (elevenErr) {
       // Fallback: Base44 built-in GenerateSpeech
       const result = await base44.asServiceRole.integrations.Core.GenerateSpeech({
@@ -56,12 +81,19 @@ Deno.serve(async (req) => {
         voice: voice || 'storm',
       });
       const fallbackRes = await fetch(result.url);
-      const fallbackBuffer = await fallbackRes.arrayBuffer();
-      return new Response(fallbackBuffer, {
-        status: 200,
-        headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' },
-      });
+      audioBuffer = await fallbackRes.arrayBuffer();
     }
+
+    // Encode as base64 so it survives JSON transport through the SDK/Axios
+    const bytes = new Uint8Array(audioBuffer);
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    const base64Audio = btoa(binary);
+
+    return Response.json({ audio: base64Audio }, {
+      status: 200,
+      headers: { 'Cache-Control': 'no-cache' },
+    });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
