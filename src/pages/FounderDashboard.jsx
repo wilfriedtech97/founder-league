@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy, Github, Linkedin, Globe, Star, TrendingUp, Rocket,
-  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users, Scale
+  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users, Scale, MessageSquare
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
@@ -82,10 +82,26 @@ export default function FounderDashboard() {
     }
   };
 
+  const [negotiateOffer, setNegotiateOffer] = useState(null);
+  const [negotiateMsg, setNegotiateMsg] = useState('');
+
   const handleOffer = async (offer, action) => {
     try {
       await base44.entities.InvestmentOffer.update(offer.id, { status: action });
       toast({ title: `Offer ${action}`, description: `Investment offer has been ${action}.` });
+      loadData();
+    } catch (err) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    }
+  };
+
+  const handleNegotiate = async (e) => {
+    e.preventDefault();
+    try {
+      await base44.entities.InvestmentOffer.update(negotiateOffer.id, { status: 'negotiating', message: negotiateMsg });
+      toast({ title: 'Counter-offer sent', description: 'The investor has been notified of your counter-terms.' });
+      setNegotiateOffer(null);
+      setNegotiateMsg('');
       loadData();
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -328,6 +344,7 @@ export default function FounderDashboard() {
                     {offer.status === 'pending' && (
                       <>
                         <Button size="sm" onClick={() => handleOffer(offer, 'accepted')} className="bg-emerald-500 hover:bg-emerald-600"><Check className="w-4 h-4" /></Button>
+                        <Button size="sm" variant="outline" onClick={() => { setNegotiateOffer(offer); setNegotiateMsg(offer.message || ''); }} className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10"><MessageSquare className="w-4 h-4" /></Button>
                         <Button size="sm" variant="destructive" onClick={() => handleOffer(offer, 'rejected')}><X className="w-4 h-4" /></Button>
                       </>
                     )}
@@ -340,6 +357,32 @@ export default function FounderDashboard() {
       </div>
       {judgeTarget && (
         <JudgeAI target={judgeTarget} type={judgeType} onClose={() => setJudgeTarget(null)} />
+      )}
+
+      {negotiateOffer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setNegotiateOffer(null)}>
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()} className="max-w-md w-full p-8 rounded-2xl bg-zinc-900 border border-white/10">
+            <div className="mb-4">
+              <h3 className="text-xl font-bold">Counter-Offer to {negotiateOffer.investor_name}</h3>
+              {negotiateOffer.project_name && <p className="text-white/50 text-sm">Project: {negotiateOffer.project_name}</p>}
+              <div className="flex gap-4 text-sm text-white/60 mt-2">
+                {negotiateOffer.amount && <span>💰 {negotiateOffer.amount}</span>}
+                {negotiateOffer.valuation && <span>📊 {negotiateOffer.valuation}</span>}
+                {negotiateOffer.equity && <span>📐 {negotiateOffer.equity}</span>}
+              </div>
+            </div>
+            <form onSubmit={handleNegotiate} className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-white/80">Your Counter-Terms & Message</Label>
+                <Textarea required value={negotiateMsg} onChange={(e) => setNegotiateMsg(e.target.value)} placeholder="Propose your counter-terms (amount, valuation, equity) and explain your position..." className="bg-white/5 border-white/10 text-white min-h-[120px]" />
+              </div>
+              <div className="flex gap-3">
+                <Button type="submit" className="flex-1 bg-amber-500 hover:bg-amber-600 text-black"><MessageSquare className="w-4 h-4 mr-2" /> Send Counter-Offer</Button>
+                <Button type="button" variant="outline" onClick={() => setNegotiateOffer(null)} className="border-white/10 text-white hover:bg-white/5">Cancel</Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
       )}
     </div>
   );

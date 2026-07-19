@@ -321,7 +321,7 @@ export default function InvestorDashboard() {
             <div className="space-y-3">
               {offers.map((offer) => (
                 <div key={offer.id} className="p-5 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-bold">{offer.founder_name}</h3>
                     {offer.project_name && <span className="text-xs text-white/50">{offer.project_name}</span>}
                     <div className="flex gap-4 text-sm text-white/60 mt-1">
@@ -329,6 +329,12 @@ export default function InvestorDashboard() {
                       {offer.valuation && <span>📊 {offer.valuation}</span>}
                       {offer.equity && <span>📐 {offer.equity}</span>}
                     </div>
+                    {offer.status === 'negotiating' && offer.message && (
+                      <div className="mt-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                        <p className="text-xs text-amber-300 font-medium mb-1">💬 Founder's counter-offer:</p>
+                        <p className="text-xs text-white/70">{offer.message}</p>
+                      </div>
+                    )}
                   </div>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${offer.status === 'accepted' ? 'bg-emerald-500/20 text-emerald-300' : offer.status === 'rejected' ? 'bg-red-500/20 text-red-300' : offer.status === 'negotiating' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/60'}`}>{offer.status}</span>
                 </div>
