@@ -39,14 +39,6 @@ export default function ApplyInvestor() {
     try {
       await base44.auth.register({ email: form.email, password });
       await base44.entities.InvestorApplication.create({ ...form, status: 'approved' });
-      await base44.entities.InvestorProfile.create({
-        full_name: form.full_name,
-        fund_name: form.fund_name || '',
-        thesis: form.thesis || '',
-        check_size: form.check_size || '$100K-$500K',
-        sectors: form.sectors ? form.sectors.split(',').map(s => s.trim()) : [],
-        linkedin_url: form.linkedin_url || '',
-      });
       setShowOtp(true);
       toast({ title: 'Account Created!', description: 'Check your email for a verification code to access your dashboard.' });
     } catch (err) {
@@ -63,6 +55,14 @@ export default function ApplyInvestor() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
+      await base44.entities.InvestorProfile.create({
+        full_name: form.full_name,
+        fund_name: form.fund_name || '',
+        thesis: form.thesis || '',
+        check_size: form.check_size || '$100K-$500K',
+        sectors: form.sectors ? form.sectors.split(',').map(s => s.trim()) : [],
+        linkedin_url: form.linkedin_url || '',
+      });
       window.location.href = '/investor-dashboard';
     } catch (err) {
       toast({ title: 'Error', description: err.message || 'Invalid verification code', variant: 'destructive' });

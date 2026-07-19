@@ -39,6 +39,22 @@ export default function ApplyFounder() {
     try {
       await base44.auth.register({ email: form.email, password });
       await base44.entities.FounderApplication.create({ ...form, status: 'approved' });
+      setShowOtp(true);
+      toast({ title: 'Account Created!', description: 'Check your email for a verification code to access your dashboard.' });
+    } catch (err) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    setLoading(true);
+    try {
+      const result = await base44.auth.verifyOtp({ email: form.email, otpCode });
+      if (result?.access_token) {
+        base44.auth.setToken(result.access_token);
+      }
       await base44.entities.FounderProfile.create({
         full_name: form.full_name,
         bio: form.bio || '',
@@ -59,22 +75,6 @@ export default function ApplyFounder() {
         verified: true,
         tag: 'Hidden Gem',
       });
-      setShowOtp(true);
-      toast({ title: 'Account Created!', description: 'Check your email for a verification code to access your dashboard.' });
-    } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerify = async () => {
-    setLoading(true);
-    try {
-      const result = await base44.auth.verifyOtp({ email: form.email, otpCode });
-      if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
-      }
       window.location.href = '/founder-dashboard';
     } catch (err) {
       toast({ title: 'Error', description: err.message || 'Invalid verification code', variant: 'destructive' });
