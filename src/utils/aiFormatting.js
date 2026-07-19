@@ -16,25 +16,59 @@ FORMATTING REQUIREMENTS — MANDATORY:
 export function cleanMarkdownForTTS(text) {
   if (!text) return '';
   return text
+    // Remove code blocks entirely (they don't read well)
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`([^`]+)`/g, '$1')
+    // Strip markdown heading markers
     .replace(/^#{1,6}\s+/gm, '')
+    // Strip bold/italic markers, keep the text inside
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/\*([^*]+)\*/g, '$1')
     .replace(/__([^_]+)__/g, '$1')
     .replace(/_([^_]+)_/g, '$1')
+    // Remove list bullet markers and numbered list markers
     .replace(/^[\s]*[-•*]\s+/gm, '')
     .replace(/^[\s]*\d+\.\s+/gm, '')
+    // Remove blockquote markers
     .replace(/^>\s+/gm, '')
+    // Convert markdown links to just the link text
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/^---+$/gm, '')
+    // Remove horizontal rules
+    .replace(/^---+$/gm, ' ')
+    // Remove table rows and pipes
     .replace(/^\|.+\|$/gm, ' ')
     .replace(/\|/g, ' ')
+    // Expand common symbols to spoken words for natural reading
+    .replace(/&/g, ' and ')
+    .replace(/%/g, ' percent')
+    .replace(/\$/g, ' ')
+    .replace(/@/g, ' at ')
+    .replace(/→/g, ' to ')
+    .replace(/✅/g, ' approved ')
+    .replace(/❌/g, ' not recommended ')
+    .replace(/⚠️/g, ' warning ')
+    .replace(/[🔥⭐🚀💡⚡]/g, ' ')
+    .replace(/\+/g, ' plus ')
+    .replace(/=/g, ' equals ')
+    .replace(/\//g, ' ')
+    // Replace colons and semicolons at line ends with periods for natural sentence breaks
     .replace(/:\s*\n/g, '. ')
+    .replace(/;\s*/g, ', ')
+    // Turn newlines into natural sentence spacing
     .replace(/([.!?])\s*\n/g, '$1 ')
     .replace(/\n{2,}/g, '. ')
     .replace(/\n/g, ' ')
+    // Collapse multiple spaces into a single space — prevents word-by-word robotic reading
     .replace(/[ \t]{2,}/g, ' ')
-    .replace(/\s+([.,!?])/g, '$1')
+    // Attach punctuation to preceding word (no space before commas, periods, etc.)
+    .replace(/\s+([.,!?;:])/g, '$1')
+    // Ensure a single space after punctuation
+    .replace(/([.,!?;:])(?=[A-Za-z])/g, '$1 ')
+    // Remove any remaining isolated punctuation clusters
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\(\s*\)/g, ' ')
+    .replace(/\[\s*\]/g, ' ')
+    .replace(/\{\s*\}/g, ' ')
+    .replace(/[{}[\]()]/g, ' ')
     .trim();
 }

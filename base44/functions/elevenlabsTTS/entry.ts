@@ -23,11 +23,12 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get('ELEVENLABS_API_KEY');
     const elevenlabs = new ElevenLabsClient({ apiKey });
 
-    // Normalize text: collapse excessive whitespace, ensure sentence-ending pauses
+    // Normalize text: collapse whitespace, attach punctuation naturally, remove stray symbols
     const normalizedText = text
-      .replace(/\n{3,}/g, '\n\n')
       .replace(/[ \t]{2,}/g, ' ')
-      .replace(/\s+([.,!?])/g, '$1')
+      .replace(/\s+([.,!?;:])/g, '$1')
+      .replace(/([.,!?;:])(?=[A-Za-z])/g, '$1 ')
+      .replace(/\s{2,}/g, ' ')
       .trim()
       .slice(0, 5000);
 
@@ -38,8 +39,8 @@ Deno.serve(async (req) => {
         outputFormat: 'mp3_44100_192',
         voiceSettings: {
           stability: 0.5,
-          similarityBoost: 0.85,
-          style: 0.3,
+          similarityBoost: 0.78,
+          style: 0.15,
           useSpeakerBoost: true,
         },
       });
