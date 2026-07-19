@@ -6,12 +6,14 @@ import MarkdownContent from '@/components/MarkdownContent';
 import { useToast } from '@/components/ui/use-toast';
 import { base44 } from '@/api/base44Client';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 
 export default function OfferDetailsModal({ offer, role, context, onClose }) {
   const [analysis, setAnalysis] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   const runAnalysis = async () => {
     setAnalyzing(true);
@@ -124,9 +126,12 @@ Use markdown formatting with bold labels and bullet points. Be specific and data
 
         <div className="border-t border-white/10 pt-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-violet-400" /> AI Offer Analysis
-            </h3>
+            <div className="flex items-center gap-3">
+              <VoiceControls voice={voice} color="violet" />
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-violet-400" /> AI Offer Analysis
+              </h3>
+            </div>
             {!analysis && (
               <Button onClick={runAnalysis} disabled={analyzing} className="bg-violet-500 hover:bg-violet-600 text-white">
                 {analyzing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4 mr-2" /> Run Analysis</>}

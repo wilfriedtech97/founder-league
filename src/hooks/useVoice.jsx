@@ -6,10 +6,33 @@ export function useVoice(defaultVoice = 'storm') {
   const [speaking, setSpeaking] = useState(false);
   const [loading, setLoading] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const audioRef = useRef(null);
 
+  const stop = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setSpeaking(false);
+    setPaused(false);
+  }, []);
+
+  const setEnabled = useCallback((value) => {
+    setDisabled(!value);
+    if (!value) stop();
+  }, [stop]);
+
+  const toggleDisabled = useCallback(() => {
+    setDisabled(prev => {
+      const next = !prev;
+      if (next) stop();
+      return next;
+    });
+  }, [stop]);
+
   const speak = useCallback(async (text, voice) => {
-    if (!text || !text.trim()) return;
+    if (!text || !text.trim() || disabled) return;
 
     if (audioRef.current) {
       audioRef.current.pause();
@@ -69,7 +92,7 @@ export function useVoice(defaultVoice = 'storm') {
     } finally {
       setLoading(false);
     }
-  }, [defaultVoice]);
+  }, [defaultVoice, disabled]);
 
   const pause = useCallback(() => {
     if (audioRef.current) {
@@ -85,14 +108,5 @@ export function useVoice(defaultVoice = 'storm') {
     }
   }, []);
 
-  const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-    setSpeaking(false);
-    setPaused(false);
-  }, []);
-
-  return { speak, stop, pause, resume, speaking, loading, paused };
+  return { speak, stop, pause, resume, speaking, loading, paused, disabled, setEnabled, toggleDisabled };
 }

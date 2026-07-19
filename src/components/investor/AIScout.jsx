@@ -10,6 +10,7 @@ import {
 import MarkdownContent from '@/components/MarkdownContent';
 import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 
 export default function AIScout({ profile, founders, projects }) {
   const [tab, setTab] = useState('chat');
@@ -21,7 +22,8 @@ export default function AIScout({ profile, founders, projects }) {
   const [budget, setBudget] = useState('');
   const scrollRef = useRef(null);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -187,9 +189,12 @@ RESPONSE STYLE:
           <h2 className="text-xl font-bold">AI Scout Agent</h2>
           <p className="text-white/50 text-sm">Search · Analyze · Rank · Compare · Recommend · ROI · Risk · Due Diligence · Portfolio · Negotiation</p>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-emerald-400 font-medium">Scouting</span>
+        <div className="flex items-center gap-3">
+          <VoiceControls voice={voice} color="emerald" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-emerald-400 font-medium">Scouting</span>
+          </div>
         </div>
       </div>
 

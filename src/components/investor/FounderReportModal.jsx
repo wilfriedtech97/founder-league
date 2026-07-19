@@ -6,12 +6,14 @@ import { X, FileText, Loader2, Volume2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import ScoreRing from '@/components/ScoreRing';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 
 export default function FounderReportModal({ founder, projects, onClose }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   useEffect(() => {
     if (founder) generateReport();
@@ -62,7 +64,10 @@ Generate a report with: Executive Summary, Key Strengths, Weaknesses, Investment
             <FileText className="w-5 h-5 text-violet-400" />
             <h3 className="text-lg font-bold">AI Investment Report</h3>
           </div>
-          <button onClick={onClose} className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
+          <div className="flex items-center gap-3">
+            <VoiceControls voice={voice} color="violet" />
+            <button onClick={onClose} className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
+          </div>
         </div>
 
         <div className="flex items-center gap-4 mb-6 p-4 rounded-lg bg-white/5">

@@ -7,6 +7,7 @@ import { Send, Loader2, Bot, GraduationCap, Volume2, FileText, TrendingUp, Targe
 import MarkdownContent from '@/components/MarkdownContent';
 import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 
 export default function FounderAgent({ profile, projects, onUpdated }) {
   const [tab, setTab] = useState('chat');
@@ -20,7 +21,8 @@ export default function FounderAgent({ profile, projects, onUpdated }) {
   const [applyingScores, setApplyingScores] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -230,9 +232,12 @@ RESPONSE STYLE:
           <h2 className="text-xl font-bold">Founder AI Agent</h2>
           <p className="text-white/50 text-sm">Your personal AI representative — answers investors, defends your startup, negotiates valuations</p>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-emerald-400 font-medium">Active</span>
+        <div className="flex items-center gap-3">
+          <VoiceControls voice={voice} color="violet" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-emerald-400 font-medium">Active</span>
+          </div>
         </div>
       </div>
 

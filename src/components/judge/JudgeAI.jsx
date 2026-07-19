@@ -6,6 +6,7 @@ import { X, Scale, Loader2, Volume2, Send, CheckCircle2, AlertTriangle, Shield }
 import MarkdownContent from '@/components/MarkdownContent';
 import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -17,7 +18,8 @@ export default function JudgeAI({ target, type, onClose }) {
   const [thinking, setThinking] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   const sources = ['GitHub', 'LinkedIn', 'Website', 'Demo', 'Product', 'Code', 'Pitch', 'Market', 'Revenue'];
 
@@ -189,7 +191,8 @@ SCORING RULES:
               <p className="text-xs text-white/50">Independent Evaluator · Objective Analysis</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <VoiceControls voice={voice} color="violet" />
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20">
               <div className={`w-2 h-2 rounded-full ${scanning ? 'bg-violet-400 animate-pulse' : 'bg-violet-400'}`} />
               <span className="text-xs text-violet-400 font-medium">{scanning ? 'Evaluating' : 'Complete'}</span>

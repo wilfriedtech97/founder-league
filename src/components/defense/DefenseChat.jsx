@@ -8,6 +8,7 @@ import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 
 export default function DefenseChat({ project }) {
   const [messages, setMessages] = useState([]);
@@ -15,7 +16,8 @@ export default function DefenseChat({ project }) {
   const [thinking, setThinking] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -103,9 +105,12 @@ RESPONSE STYLE:
           <h3 className="font-bold">{project.name} — Defense Mode</h3>
           <p className="text-xs text-white/50">{project.category} · {project.stage}</p>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">
-          <div className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
-          <span className="text-xs text-rose-400 font-medium">Defending</span>
+        <div className="flex items-center gap-3">
+          <VoiceControls voice={voice} color="rose" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">
+            <div className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+            <span className="text-xs text-rose-400 font-medium">Defending</span>
+          </div>
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import { X, Send, Loader2, Volume2, Zap } from 'lucide-react';
 import MarkdownContent from '@/components/MarkdownContent';
 import { AI_FORMATTING_DIRECTIVE } from '@/utils/aiFormatting';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -15,7 +16,8 @@ export default function ProjectAgent({ project, onClose }) {
   const [thinking, setThinking] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -119,7 +121,10 @@ RESPONSE STYLE:
               <p className="text-xs text-white/50">{project.category} · {project.stage} · by {project.founder_name || 'N/A'}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
+          <div className="flex items-center gap-3">
+            <VoiceControls voice={voice} color="sky" />
+            <button onClick={onClose} className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
+          </div>
         </div>
 
         <div className="grid grid-cols-4 gap-2 mb-4">

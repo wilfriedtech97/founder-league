@@ -5,12 +5,14 @@ import { useToast } from '@/components/ui/use-toast';
 import { X, FileText, Loader2, Volume2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useVoice } from '@/hooks/useVoice';
+import VoiceControls from '@/components/VoiceControls';
 
 export default function ProjectReportModal({ project, onClose }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
+  const voice = useVoice();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = voice;
 
   useEffect(() => {
     if (project) generateReport();
@@ -60,7 +62,10 @@ Generate a report with: Executive Summary, Market Opportunity, Competitive Advan
             <FileText className="w-5 h-5 text-sky-400" />
             <h3 className="text-lg font-bold">AI Project Report</h3>
           </div>
-          <button onClick={onClose} className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
+          <div className="flex items-center gap-3">
+            <VoiceControls voice={voice} color="sky" />
+            <button onClick={onClose} className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
+          </div>
         </div>
 
         <div className="flex items-center gap-4 mb-6 p-4 rounded-lg bg-white/5">
