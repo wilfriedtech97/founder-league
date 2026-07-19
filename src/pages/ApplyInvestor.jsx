@@ -55,6 +55,7 @@ export default function ApplyInvestor() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
+      await base44.functions.invoke('assignUserRole', { role: 'investor' });
       await base44.entities.InvestorProfile.create({
         full_name: form.full_name,
         fund_name: form.fund_name || '',

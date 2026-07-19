@@ -23,6 +23,10 @@ export default function Login() {
       const currentUser = await base44.auth.me();
       if (currentUser.role === 'admin') {
         window.location.href = '/admin';
+      } else if (currentUser.role === 'founder') {
+        window.location.href = '/founder-dashboard';
+      } else if (currentUser.role === 'investor') {
+        window.location.href = '/investor-dashboard';
       } else {
         try {
           const founderProfiles = await base44.entities.FounderProfile.filter({ created_by_id: currentUser.id });

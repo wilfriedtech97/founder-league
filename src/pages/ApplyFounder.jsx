@@ -55,6 +55,7 @@ export default function ApplyFounder() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
+      await base44.functions.invoke('assignUserRole', { role: 'founder' });
       await base44.entities.FounderProfile.create({
         full_name: form.full_name,
         bio: form.bio || '',

@@ -10,6 +10,8 @@ export function useUserRole() {
         const user = await base44.auth.me();
         if (!user) { setUserRole(null); return; }
         if (user.role === 'admin') { setUserRole('admin'); return; }
+        if (user.role === 'founder') { setUserRole('founder'); return; }
+        if (user.role === 'investor') { setUserRole('investor'); return; }
 
         const [founderProfiles, investorProfiles] = await Promise.all([
           base44.entities.FounderProfile.filter({ created_by_id: user.id }, '-created_date', 1),
