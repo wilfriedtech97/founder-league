@@ -23,15 +23,23 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get('ELEVENLABS_API_KEY');
     const elevenlabs = new ElevenLabsClient({ apiKey });
 
+    // Normalize text: collapse excessive whitespace, ensure sentence-ending pauses
+    const normalizedText = text
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/[ \t]{2,}/g, ' ')
+      .replace(/\s+([.,!?])/g, '$1')
+      .trim()
+      .slice(0, 5000);
+
     try {
       const audio = await elevenlabs.textToSpeech.convert(voiceId, {
-        text: text.slice(0, 5000),
+        text: normalizedText,
         modelId: 'eleven_multilingual_v2',
-        outputFormat: 'mp3_44100_128',
+        outputFormat: 'mp3_44100_192',
         voiceSettings: {
           stability: 0.5,
-          similarityBoost: 0.75,
-          style: 0.35,
+          similarityBoost: 0.85,
+          style: 0.3,
           useSpeakerBoost: true,
         },
       });

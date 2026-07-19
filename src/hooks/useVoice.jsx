@@ -25,10 +25,26 @@ export function useVoice(defaultVoice = 'storm') {
         voice: voice || defaultVoice,
       });
 
-      const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+      // Handle both ArrayBuffer and binary string responses
+      const rawData = response.data;
+      let audioBuffer;
+      if (rawData instanceof ArrayBuffer) {
+        audioBuffer = rawData;
+      } else if (rawData instanceof Uint8Array) {
+        audioBuffer = rawData.buffer;
+      } else if (typeof rawData === 'string') {
+        const bytes = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; i++) bytes[i] = rawData.charCodeAt(i) & 0xff;
+        audioBuffer = bytes.buffer;
+      } else {
+        audioBuffer = rawData;
+      }
+
+      const audioBlob = new Blob([audioBuffer], { type: 'audio/mpeg' });
       const audioUrl = URL.createObjectURL(audioBlob);
 
       const audio = new Audio(audioUrl);
+      audio.volume = 1.0;
       audioRef.current = audio;
       setSpeaking(true);
 
