@@ -84,6 +84,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nConversation:\n${conversation}\n\nProject:`,
       });
       setMessages([...newMessages, { role: 'assistant', content: response }]);
+      speak(response);
     } catch (err) {
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {

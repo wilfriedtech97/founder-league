@@ -88,6 +88,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nConversation:\n${conversation}\n\nAI Scout:`,
       });
       setMessages([...newMessages, { role: 'assistant', content: response }]);
+      speak(response);
     } catch (err) {
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
@@ -107,6 +108,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nThe investor says: "I have ${budget}."\n\nFind founders that match the investor's budget and investment strategy. For each match, explain why they match, estimate potential ROI, and note any risks. Format as a numbered list with founder name, key metrics, and reasoning. Start with "I found N founders matching your investment strategy."`,
       });
       setAiOutput({ type: 'portfolio', content: response });
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to match portfolio', variant: 'destructive' });
     } finally {
@@ -122,6 +124,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nPredict the potential ROI for the top 5 founders. For each, provide: estimated ROI range (e.g., 3-5x), time horizon, key growth drivers, and confidence level. Format as markdown.`,
       });
       setAiOutput({ type: 'roi', content: response });
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to predict ROI', variant: 'destructive' });
     } finally {
@@ -137,6 +140,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nPerform a comprehensive risk analysis across all founders. For each founder, identify specific risk factors and mitigation strategies. Highlight the 3 safest investments and the 3 riskiest. Format as markdown.`,
       });
       setAiOutput({ type: 'risk', content: response });
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to analyze risk', variant: 'destructive' });
     } finally {
@@ -152,6 +156,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nGenerate a due diligence report for the top 3 founders. For each, include: background verification, technical assessment, market analysis, financial review, legal considerations, and recommended next steps. Format as markdown.`,
       });
       setAiOutput({ type: 'dd', content: response });
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to generate due diligence', variant: 'destructive' });
     } finally {

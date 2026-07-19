@@ -116,6 +116,7 @@ SCORING RULES:
         }
       });
       setEvaluation(response);
+      if (response.summary) speak(response.summary);
     } catch (err) {
       toast({ title: 'Evaluation failed', description: err.message, variant: 'destructive' });
     } finally {
@@ -137,6 +138,7 @@ SCORING RULES:
         prompt: `${buildSystemPrompt()}\n\nEVALUATION RESULT:\n${JSON.stringify(evaluation, null, 2)}\n\nConversation:\n${conversation}\n\nJudge:`,
       });
       setMessages([...newMessages, { role: 'assistant', content: response }]);
+      speak(response);
     } catch (err) {
       setMessages([...newMessages, { role: 'assistant', content: 'Error processing question.' }]);
     } finally {

@@ -42,6 +42,7 @@ ${mode === 'coaching' ? 'As a coach, give specific, actionable advice to improve
         prompt: `${buildContext()}\n\nConversation:\n${conversation}\n\nAI:`,
       });
       setMessages([...newMessages, { role: 'assistant', content: response }]);
+      speak(response);
     } catch (err) {
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {

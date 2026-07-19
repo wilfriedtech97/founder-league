@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
+import { cleanMarkdownForTTS } from '@/utils/aiFormatting';
 
 export function useVoice(defaultVoice = 'storm') {
   const [speaking, setSpeaking] = useState(false);
@@ -18,8 +19,9 @@ export function useVoice(defaultVoice = 'storm') {
     setPaused(false);
     setLoading(true);
     try {
+      const cleanText = cleanMarkdownForTTS(text.slice(0, 5000));
       const response = await base44.functions.invoke('elevenlabsTTS', {
-        text: text.slice(0, 5000),
+        text: cleanText,
         voice: voice || defaultVoice,
       });
 

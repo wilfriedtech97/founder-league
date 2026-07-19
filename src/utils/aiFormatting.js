@@ -12,3 +12,23 @@ FORMATTING REQUIREMENTS — MANDATORY:
 - Write in a natural, confident, human tone — never robotic, never templated
 - Each list item must be complete and meaningful (no fragments)
 - Keep paragraphs short (2-3 sentences), then use lists for specifics`;
+
+export function cleanMarkdownForTTS(text) {
+  if (!text) return '';
+  return text
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/^[\s]*[-•*]\s+/gm, '')
+    .replace(/^[\s]*\d+\.\s+/gm, '')
+    .replace(/```[\s\S]*?```/g, ' code block ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^>\s+/gm, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^---+$/gm, '')
+    .replace(/\|/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}

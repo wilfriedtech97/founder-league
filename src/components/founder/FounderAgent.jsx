@@ -102,6 +102,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\n${modeInstruction}\n\nConversation:\n${conversation}\n\nAI:`,
       });
       setMessages([...newMessages, { role: 'assistant', content: response }]);
+      speak(response);
     } catch (err) {
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
@@ -118,6 +119,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nGenerate a comprehensive Founder Analysis Report. Include sections: Executive Summary, Key Strengths, Areas for Improvement, Market Position, Investment Recommendation, and Action Items. Format as markdown.`,
       });
       setAiOutput({ type: 'report', content: response });
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to generate report', variant: 'destructive' });
     } finally {
@@ -134,6 +136,7 @@ RESPONSE STYLE:
         prompt: `${buildSystemPrompt()}\n\nBased on the founder's metrics, projects, and scores, predict their startup growth trajectory for the next 12-24 months. Include: Growth Forecast, Key Growth Drivers, Potential Risks, Milestone Predictions, and Revenue Projections. Format as markdown.`,
       });
       setAiOutput({ type: 'growth', content: response });
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to predict growth', variant: 'destructive' });
     } finally {

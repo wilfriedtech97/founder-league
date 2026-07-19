@@ -28,6 +28,12 @@ Deno.serve(async (req) => {
         text: text.slice(0, 5000),
         modelId: 'eleven_multilingual_v2',
         outputFormat: 'mp3_44100_128',
+        voiceSettings: {
+          stability: 0.5,
+          similarityBoost: 0.75,
+          style: 0.35,
+          useSpeakerBoost: true,
+        },
       });
 
       return new Response(audio, {
