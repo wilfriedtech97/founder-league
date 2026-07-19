@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, User, TrendingUp, LogOut, Menu, X, Scale } from 'lucide-react';
+import { Shield, User, TrendingUp, LogOut, Menu, X, Scale, Swords } from 'lucide-react';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 
@@ -18,6 +18,7 @@ export default function Navbar({ userRole }) {
     { label: 'Founder Score', path: '/founder-dashboard#score' },
     { label: 'Offers', path: '/founder-dashboard#offers' },
     { label: 'Judge AI', path: '/judge', icon: Scale },
+    { label: 'Defense', path: '/defense', icon: Swords },
   ];
 
   const investorLinks = [
@@ -26,6 +27,7 @@ export default function Navbar({ userRole }) {
     { label: 'Watchlist', path: '/investor-dashboard#watchlist' },
     { label: 'Offers', path: '/investor-dashboard#offers' },
     { label: 'Judge AI', path: '/judge', icon: Scale },
+    { label: 'Defense', path: '/defense', icon: Swords },
   ];
 
   const adminLinks = [
@@ -33,6 +35,7 @@ export default function Navbar({ userRole }) {
     { label: 'Founders', path: '/founder-dashboard' },
     { label: 'Investors', path: '/investor-dashboard' },
     { label: 'Judge AI', path: '/judge', icon: Scale },
+    { label: 'Defense', path: '/defense', icon: Swords },
   ];
 
   const links = userRole === 'founder' ? founderLinks : userRole === 'investor' ? investorLinks : userRole === 'admin' ? adminLinks : [];
@@ -56,7 +59,7 @@ export default function Navbar({ userRole }) {
               </>
             )}
             {links.map((link) => (
-              <Link key={link.label} to={link.path} className={`flex items-center gap-1 transition-colors text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : 'text-white/70 hover:text-white'}`}>
+              <Link key={link.label} to={link.path} className={`flex items-center gap-1 transition-colors text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : link.label === 'Defense' ? 'text-rose-400 hover:text-rose-300' : 'text-white/70 hover:text-white'}`}>
                 {link.icon && <link.icon className="w-3.5 h-3.5" />} {link.label}
               </Link>
             ))}
@@ -85,7 +88,7 @@ export default function Navbar({ userRole }) {
               </>
             )}
             {links.map((link) => (
-              <Link key={link.label} to={link.path} onClick={() => setOpen(false)} className={`flex items-center gap-1 text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : 'text-white/70 hover:text-white'}`}>
+              <Link key={link.label} to={link.path} onClick={() => setOpen(false)} className={`flex items-center gap-1 text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : link.label === 'Defense' ? 'text-rose-400 hover:text-rose-300' : 'text-white/70 hover:text-white'}`}>
                 {link.icon && <link.icon className="w-3.5 h-3.5" />} {link.label}
               </Link>
             ))}
