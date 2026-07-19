@@ -36,12 +36,18 @@ export default function FounderDashboard() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [profiles, allProjects, allOffers] = await Promise.all([
-        base44.entities.FounderProfile.filter({}, '-created_date', 1),
-        base44.entities.Project.filter({}, '-created_date', 50),
-        base44.entities.InvestmentOffer.filter({}, '-created_date', 50),
-      ]);
-      setProfile(profiles[0] || null);
+      const user = await base44.auth.me();
+      const profiles = await base44.entities.FounderProfile.filter({ created_by_id: user.id }, '-created_date', 1);
+      const myProfile = profiles[0] || null;
+
+      const [allProjects, allOffers] = myProfile
+        ? await Promise.all([
+            base44.entities.Project.filter({ founder_id: myProfile.id }, '-created_date', 50),
+            base44.entities.InvestmentOffer.filter({ founder_id: myProfile.id }, '-created_date', 50),
+          ])
+        : [[], []];
+
+      setProfile(myProfile);
       setProjects(allProjects);
       setOffers(allOffers);
     } catch (err) {

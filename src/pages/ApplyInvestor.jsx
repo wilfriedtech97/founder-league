@@ -26,7 +26,7 @@ export default function ApplyInvestor() {
     try {
       await base44.entities.InvestorApplication.create(form);
       setSubmitted(true);
-      toast({ title: 'Application submitted!', description: 'The admin will review your request.' });
+      toast({ title: 'Application Submitted', description: 'Your request will be verified and validated by our team.' });
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
@@ -51,8 +51,8 @@ export default function ApplyInvestor() {
           </div>
           <h1 className="text-3xl font-black mb-3">Application Received!</h1>
           <p className="text-white/60 mb-8">
-            Your investor application has been submitted for review. Once approved by our admin team,
-            you'll gain access to the AI Scout Network and Transfer Market.
+            Your request will be verified and validated by our admin team. You'll be notified once approved
+            and will then get access to the Investor Dashboard.
           </p>
           <Button onClick={() => navigate('/')} className="bg-emerald-400 text-black hover:bg-emerald-500 font-bold">
             Back to Home

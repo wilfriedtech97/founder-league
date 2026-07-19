@@ -26,7 +26,7 @@ export default function ApplyFounder() {
     try {
       await base44.entities.FounderApplication.create(form);
       setSubmitted(true);
-      toast({ title: 'Application submitted!', description: 'The admin will review your request.' });
+      toast({ title: 'Application Submitted', description: 'Your request will be verified and validated by our team.' });
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
@@ -50,8 +50,8 @@ export default function ApplyFounder() {
           </div>
           <h1 className="text-3xl font-black mb-3">Application Received!</h1>
           <p className="text-white/60 mb-8">
-            Your founder application has been submitted for review. Our admin team will validate your request
-            and you'll be notified once approved. This is your transfer to the Founder League.
+            Your request will be verified and validated by our admin team. You'll be notified once approved
+            and will then get access to your Founder Dashboard.
           </p>
           <Button onClick={() => navigate('/')} className="bg-amber-400 text-black hover:bg-amber-500 font-bold">
             Back to Home

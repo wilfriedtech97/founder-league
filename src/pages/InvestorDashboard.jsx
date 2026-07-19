@@ -49,15 +49,19 @@ export default function InvestorDashboard() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [profiles, allFounders, allProjects, allOffers, allWatchlist, allMeetings] = await Promise.all([
-        base44.entities.InvestorProfile.filter({}, '-created_date', 1),
+      const user = await base44.auth.me();
+      const profiles = await base44.entities.InvestorProfile.filter({ created_by_id: user.id }, '-created_date', 1);
+      const myProfile = profiles[0] || null;
+
+      const [allFounders, allProjects, allOffers, allWatchlist, allMeetings] = await Promise.all([
         base44.entities.FounderProfile.filter({}, '-score_overall', 100),
         base44.entities.Project.filter({}, '-score_overall', 50),
-        base44.entities.InvestmentOffer.filter({}, '-created_date', 50),
-        base44.entities.Watchlist.filter({}, '-created_date', 50),
-        base44.entities.Meeting.filter({}, '-created_date', 50),
+        myProfile ? base44.entities.InvestmentOffer.filter({ investor_id: myProfile.id }, '-created_date', 50) : Promise.resolve([]),
+        myProfile ? base44.entities.Watchlist.filter({ investor_id: myProfile.id }, '-created_date', 50) : Promise.resolve([]),
+        myProfile ? base44.entities.Meeting.filter({ investor_id: myProfile.id }, '-created_date', 50) : Promise.resolve([]),
       ]);
-      setProfile(profiles[0] || null);
+
+      setProfile(myProfile);
       setFounders(allFounders);
       setProjects(allProjects);
       setOffers(allOffers);
