@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, User, TrendingUp, LogOut, Menu, X, Scale, Swords, Target } from 'lucide-react';
+import { Shield, User, TrendingUp, LogOut, Menu, X, Scale, Swords, Target, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 
@@ -20,6 +20,7 @@ export default function Navbar({ userRole }) {
     { label: 'Judge AI', path: '/judge', icon: Scale },
     { label: 'Defense', path: '/defense', icon: Swords },
     { label: 'Match Sim', path: '/match', icon: Target },
+    { label: 'Rankings', path: '/rankings', icon: Trophy },
   ];
 
   const investorLinks = [
@@ -30,6 +31,7 @@ export default function Navbar({ userRole }) {
     { label: 'Judge AI', path: '/judge', icon: Scale },
     { label: 'Defense', path: '/defense', icon: Swords },
     { label: 'Match Sim', path: '/match', icon: Target },
+    { label: 'Rankings', path: '/rankings', icon: Trophy },
   ];
 
   const adminLinks = [
@@ -39,6 +41,7 @@ export default function Navbar({ userRole }) {
     { label: 'Judge AI', path: '/judge', icon: Scale },
     { label: 'Defense', path: '/defense', icon: Swords },
     { label: 'Match Sim', path: '/match', icon: Target },
+    { label: 'Rankings', path: '/rankings', icon: Trophy },
   ];
 
   const links = userRole === 'founder' ? founderLinks : userRole === 'investor' ? investorLinks : userRole === 'admin' ? adminLinks : [];
@@ -62,7 +65,7 @@ export default function Navbar({ userRole }) {
               </>
             )}
             {links.map((link) => (
-              <Link key={link.label} to={link.path} className={`flex items-center gap-1 transition-colors text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : link.label === 'Defense' ? 'text-rose-400 hover:text-rose-300' : link.label === 'Match Sim' ? 'text-teal-400 hover:text-teal-300' : 'text-white/70 hover:text-white'}`}>
+              <Link key={link.label} to={link.path} className={`flex items-center gap-1 transition-colors text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : link.label === 'Defense' ? 'text-rose-400 hover:text-rose-300' : link.label === 'Match Sim' ? 'text-teal-400 hover:text-teal-300' : link.label === 'Rankings' ? 'text-amber-400 hover:text-amber-300' : 'text-white/70 hover:text-white'}`}>
                 {link.icon && <link.icon className="w-3.5 h-3.5" />} {link.label}
               </Link>
             ))}
@@ -91,7 +94,7 @@ export default function Navbar({ userRole }) {
               </>
             )}
             {links.map((link) => (
-              <Link key={link.label} to={link.path} onClick={() => setOpen(false)} className={`flex items-center gap-1 text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : link.label === 'Defense' ? 'text-rose-400 hover:text-rose-300' : link.label === 'Match Sim' ? 'text-teal-400 hover:text-teal-300' : 'text-white/70 hover:text-white'}`}>
+              <Link key={link.label} to={link.path} onClick={() => setOpen(false)} className={`flex items-center gap-1 text-sm font-medium ${link.label === 'Judge AI' ? 'text-violet-400 hover:text-violet-300' : link.label === 'Defense' ? 'text-rose-400 hover:text-rose-300' : link.label === 'Match Sim' ? 'text-teal-400 hover:text-teal-300' : link.label === 'Rankings' ? 'text-amber-400 hover:text-amber-300' : 'text-white/70 hover:text-white'}`}>
                 {link.icon && <link.icon className="w-3.5 h-3.5" />} {link.label}
               </Link>
             ))}
