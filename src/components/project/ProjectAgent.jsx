@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { X, Send, Loader2, Volume2, Zap } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import MarkdownContent from '@/components/MarkdownContent';
 import { useVoice } from '@/hooks/useVoice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -159,7 +159,7 @@ RESPONSE STYLE:
                   <p className="text-sm">{msg.content}</p>
                 ) : (
                   <>
-                    <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
+                    <MarkdownContent>{msg.content}</MarkdownContent>
                     <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 disabled:opacity-50">
                       {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                     </button>

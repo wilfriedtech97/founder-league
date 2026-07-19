@@ -7,7 +7,7 @@ import {
   Send, Loader2, Target, Volume2, MessageSquare, BarChart3,
   DollarSign, Shield, FileSearch, Briefcase, Sparkles, GitCompare, Handshake
 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import MarkdownContent from '@/components/MarkdownContent';
 import { useVoice } from '@/hooks/useVoice';
 
 export default function AIScout({ profile, founders, projects }) {
@@ -218,7 +218,7 @@ RESPONSE STYLE:
                     <p className="text-sm">{msg.content}</p>
                   ) : (
                     <>
-                      <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
+                      <MarkdownContent>{msg.content}</MarkdownContent>
                       <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50">
                         {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                       </button>
@@ -306,7 +306,7 @@ RESPONSE STYLE:
                   {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                 </button>
               </div>
-              <ReactMarkdown className="text-sm text-white/80 space-y-2">{aiOutput.content}</ReactMarkdown>
+              <MarkdownContent className="text-white/80">{aiOutput.content}</MarkdownContent>
             </div>
           )}
         </div>

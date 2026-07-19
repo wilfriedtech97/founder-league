@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { Swords, Loader2, Volume2, Gavel, Crown, Zap } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import MarkdownContent from '@/components/MarkdownContent';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useVoice } from '@/hooks/useVoice';
@@ -190,7 +190,7 @@ Respond with JSON containing the winner, analysis, and confidence boost.`,
                     </div>
                   </div>
                   <div className={`px-4 py-3 rounded-2xl ${isA ? 'bg-sky-500/10 border-sky-500/20' : 'bg-orange-500/10 border-orange-500/20'} border`}>
-                    <ReactMarkdown className="text-sm text-white/90">{round.content}</ReactMarkdown>
+                    <MarkdownContent>{round.content}</MarkdownContent>
                     <button onClick={() => speak(round.content)} disabled={voiceLoading} className={`mt-2 flex items-center gap-1 text-xs ${isA ? 'text-sky-400 hover:text-sky-300' : 'text-orange-400 hover:text-orange-300'} disabled:opacity-50`}>
                       {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                     </button>

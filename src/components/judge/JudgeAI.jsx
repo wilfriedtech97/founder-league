@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { X, Scale, Loader2, Volume2, Send, CheckCircle2, AlertTriangle, Shield } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import MarkdownContent from '@/components/MarkdownContent';
 import { useVoice } from '@/hooks/useVoice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -294,7 +294,7 @@ SCORING RULES:
                     <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl ${msg.role === 'user' ? 'bg-violet-500 text-white' : 'bg-white/5 border border-white/10 text-white'}`}>
                       {msg.role === 'user' ? <p className="text-sm">{msg.content}</p> : (
                         <>
-                          <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
+                          <MarkdownContent>{msg.content}</MarkdownContent>
                           <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
                             {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                           </button>
