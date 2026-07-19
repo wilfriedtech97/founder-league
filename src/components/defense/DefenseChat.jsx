@@ -6,6 +6,7 @@ import { Send, Loader2, Volume2, Shield, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function DefenseChat({ project }) {
   const [messages, setMessages] = useState([]);
@@ -13,6 +14,7 @@ export default function DefenseChat({ project }) {
   const [thinking, setThinking] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -82,15 +84,6 @@ RESPONSE STYLE:
     }
   };
 
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
-    }
-  };
-
   const quickChallenges = [
     'There are already 200 AI coding assistants.',
     'Why would anyone use this over existing solutions?',
@@ -135,8 +128,8 @@ RESPONSE STYLE:
               ) : (
                 <>
                   <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
-                  <button onClick={() => speak(msg.content)} className="mt-2 flex items-center gap-1 text-xs text-rose-400 hover:text-rose-300">
-                    <Volume2 className="w-3 h-3" /> Speak
+                  <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-rose-400 hover:text-rose-300 disabled:opacity-50">
+                    {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                   </button>
                 </>
               )}

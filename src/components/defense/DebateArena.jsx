@@ -6,6 +6,7 @@ import { Swords, Loader2, Volume2, Gavel, Crown, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function DebateArena({ projectA, projectB, topic }) {
   const [rounds, setRounds] = useState([]);
@@ -13,6 +14,7 @@ export default function DebateArena({ projectA, projectB, topic }) {
   const [debating, setDebating] = useState(false);
   const [currentSide, setCurrentSide] = useState(null);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   const buildProjectPrompt = (project, opponent, roundType, previousArgs) => {
     return `You are the AI Agent for ${project.name}. You are in a LIVE DEBATE against ${opponent.name}.
@@ -125,15 +127,6 @@ Respond with JSON containing the winner, analysis, and confidence boost.`,
     setDebating(false);
   };
 
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
-    }
-  };
-
   const roundLabels = ['Opening Statement', 'Response', 'Rebuttal', 'Closing Statement'];
 
   return (
@@ -198,8 +191,8 @@ Respond with JSON containing the winner, analysis, and confidence boost.`,
                   </div>
                   <div className={`px-4 py-3 rounded-2xl ${isA ? 'bg-sky-500/10 border-sky-500/20' : 'bg-orange-500/10 border-orange-500/20'} border`}>
                     <ReactMarkdown className="text-sm text-white/90">{round.content}</ReactMarkdown>
-                    <button onClick={() => speak(round.content)} className={`mt-2 flex items-center gap-1 text-xs ${isA ? 'text-sky-400 hover:text-sky-300' : 'text-orange-400 hover:text-orange-300'}`}>
-                      <Volume2 className="w-3 h-3" /> Speak
+                    <button onClick={() => speak(round.content)} disabled={voiceLoading} className={`mt-2 flex items-center gap-1 text-xs ${isA ? 'text-sky-400 hover:text-sky-300' : 'text-orange-400 hover:text-orange-300'} disabled:opacity-50`}>
+                      {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                     </button>
                   </div>
                 </div>
@@ -252,8 +245,8 @@ Respond with JSON containing the winner, analysis, and confidence boost.`,
 
             <div className="flex items-center justify-between">
               <p className="text-sm text-white/80">{verdict.summary}</p>
-              <button onClick={() => speak(verdict.summary)} className="ml-3 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 flex-shrink-0">
-                <Volume2 className="w-3 h-3" /> Speak
+              <button onClick={() => speak(verdict.summary)} disabled={voiceLoading} className="ml-3 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 flex-shrink-0 disabled:opacity-50">
+                {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
               </button>
             </div>
           </div>

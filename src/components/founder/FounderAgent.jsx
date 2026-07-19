@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { Send, Loader2, Bot, GraduationCap, Volume2, FileText, TrendingUp, Target, MessageSquare, Check, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function FounderAgent({ profile, projects, onUpdated }) {
   const [tab, setTab] = useState('chat');
@@ -18,6 +19,7 @@ export default function FounderAgent({ profile, projects, onUpdated }) {
   const [applyingScores, setApplyingScores] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -185,16 +187,6 @@ RESPONSE STYLE:
     }
   };
 
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      u.pitch = 1;
-      window.speechSynthesis.speak(u);
-    }
-  };
-
   const investorQuestions = [
     { text: 'Why should I invest in this founder?', label: 'Why should I invest?' },
     { text: "What is the founder's track record?", label: 'Track record?' },
@@ -279,8 +271,8 @@ RESPONSE STYLE:
                   ) : (
                     <>
                       <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
-                      <button onClick={() => speak(msg.content)} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300">
-                        <Volume2 className="w-3 h-3" /> Speak
+                      <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+                        {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                       </button>
                     </>
                   )}
@@ -347,8 +339,8 @@ RESPONSE STYLE:
                   {aiOutput.type === 'report' ? <FileText className="w-4 h-4 text-violet-400" /> : <TrendingUp className="w-4 h-4 text-emerald-400" />}
                   {aiOutput.type === 'report' ? 'Founder Analysis Report' : 'Growth Prediction'}
                 </h4>
-                <button onClick={() => speak(aiOutput.content)} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300">
-                  <Volume2 className="w-3 h-3" /> Speak
+                <button onClick={() => speak(aiOutput.content)} disabled={voiceLoading} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+                  {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                 </button>
               </div>
               <ReactMarkdown className="text-sm text-white/80 space-y-2">{aiOutput.content}</ReactMarkdown>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send, Loader2, Bot, GraduationCap, Volume2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function AIChat({ profile }) {
   const [messages, setMessages] = useState([]);
@@ -11,6 +12,7 @@ export default function AIChat({ profile }) {
   const [thinking, setThinking] = useState(false);
   const [mode, setMode] = useState('agent');
   const scrollRef = useRef(null);
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -43,16 +45,6 @@ ${mode === 'coaching' ? 'As a coach, give specific, actionable advice to improve
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
       setThinking(false);
-    }
-  };
-
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      u.pitch = 1;
-      window.speechSynthesis.speak(u);
     }
   };
 
@@ -108,8 +100,8 @@ ${mode === 'coaching' ? 'As a coach, give specific, actionable advice to improve
               ) : (
                 <>
                   <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
-                  <button onClick={() => speak(msg.content)} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300">
-                    <Volume2 className="w-3 h-3" /> Speak
+                  <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+                    {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                   </button>
                 </>
               )}

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Brain, Volume2, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Brain, Volume2, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { useVoice } from '@/hooks/useVoice';
 
 const verdictConfig = {
   BUY: { color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400', icon: CheckCircle },
@@ -16,16 +17,12 @@ export default function InvestmentRecommendation({ data }) {
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (confidence / 100) * circumference;
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
-  const speak = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const text = `Recommendation: ${verdict}. Confidence: ${confidence} percent. ` + 
-        (data.reasons || []).map((r, i) => `Reason ${i + 1}: ${r.title}. ${r.detail}.`).join(' ');
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
-    }
+  const handleSpeak = () => {
+    const text = `Recommendation: ${verdict}. Confidence: ${confidence} percent. ` +
+      (data.reasons || []).map((r, i) => `Reason ${i + 1}: ${r.title}. ${r.detail}.`).join(' ');
+    speak(text);
   };
 
   return (
@@ -35,8 +32,8 @@ export default function InvestmentRecommendation({ data }) {
           <Brain className="w-5 h-5 text-violet-400" />
           <h3 className="font-bold">AI Investment Recommendation</h3>
         </div>
-        <button onClick={speak} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300">
-          <Volume2 className="w-3.5 h-3.5" /> Speak
+        <button onClick={handleSpeak} disabled={voiceLoading} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+          {voiceLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
         </button>
       </div>
 

@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useToast } from '@/components/ui/use-toast';
 import { X, Scale, Loader2, Volume2, Send, CheckCircle2, AlertTriangle, Shield } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useVoice } from '@/hooks/useVoice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -15,6 +16,7 @@ export default function JudgeAI({ target, type, onClose }) {
   const [thinking, setThinking] = useState(false);
   const scrollRef = useRef(null);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   const sources = ['GitHub', 'LinkedIn', 'Website', 'Demo', 'Product', 'Code', 'Pitch', 'Market', 'Revenue'];
 
@@ -141,15 +143,6 @@ SCORING RULES:
     }
   };
 
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
-    }
-  };
-
   const scoreColor = (score) => {
     if (score >= 90) return 'from-emerald-500 to-green-600';
     if (score >= 70) return 'from-sky-500 to-blue-600';
@@ -257,8 +250,8 @@ SCORING RULES:
               <div className="p-4 rounded-xl bg-violet-500/5 border border-violet-500/20 mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-bold text-sm flex items-center gap-2"><Scale className="w-4 h-4 text-violet-400" /> Verdict</h4>
-                  <button onClick={() => speak(evaluation.summary)} className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">
-                    <Volume2 className="w-3 h-3" /> Speak
+                  <button onClick={() => speak(evaluation.summary)} disabled={voiceLoading} className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1 disabled:opacity-50">
+                    {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                   </button>
                 </div>
                 <p className="text-sm text-white/80">{evaluation.summary}</p>
@@ -302,8 +295,8 @@ SCORING RULES:
                       {msg.role === 'user' ? <p className="text-sm">{msg.content}</p> : (
                         <>
                           <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
-                          <button onClick={() => speak(msg.content)} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300">
-                            <Volume2 className="w-3 h-3" /> Speak
+                          <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+                            {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                           </button>
                         </>
                       )}

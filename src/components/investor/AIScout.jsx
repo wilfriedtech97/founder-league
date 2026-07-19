@@ -8,6 +8,7 @@ import {
   DollarSign, Shield, FileSearch, Briefcase, Sparkles, GitCompare, Handshake
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function AIScout({ profile, founders, projects }) {
   const [tab, setTab] = useState('chat');
@@ -19,6 +20,7 @@ export default function AIScout({ profile, founders, projects }) {
   const [budget, setBudget] = useState('');
   const scrollRef = useRef(null);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -156,15 +158,6 @@ RESPONSE STYLE:
     }
   };
 
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
-    }
-  };
-
   const quickActions = [
     { text: 'Which founders match my investment thesis?', label: 'Recommend', icon: Target },
     { text: 'Who are the hidden gems I should look at?', label: 'Hidden Gems', icon: Sparkles },
@@ -226,8 +219,8 @@ RESPONSE STYLE:
                   ) : (
                     <>
                       <ReactMarkdown className="text-sm text-white/90">{msg.content}</ReactMarkdown>
-                      <button onClick={() => speak(msg.content)} className="mt-2 flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300">
-                        <Volume2 className="w-3 h-3" /> Speak
+                      <button onClick={() => speak(msg.content)} disabled={voiceLoading} className="mt-2 flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50">
+                        {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                       </button>
                     </>
                   )}
@@ -309,8 +302,8 @@ RESPONSE STYLE:
                   {aiOutput.type === 'dd' && <FileSearch className="w-4 h-4 text-sky-400" />}
                   {aiOutput.type === 'portfolio' ? 'Portfolio Match' : aiOutput.type === 'roi' ? 'ROI Prediction' : aiOutput.type === 'risk' ? 'Risk Analysis' : 'Due Diligence Report'}
                 </h4>
-                <button onClick={() => speak(aiOutput.content)} className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300">
-                  <Volume2 className="w-3 h-3" /> Speak
+                <button onClick={() => speak(aiOutput.content)} disabled={voiceLoading} className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50">
+                  {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
                 </button>
               </div>
               <ReactMarkdown className="text-sm text-white/80 space-y-2">{aiOutput.content}</ReactMarkdown>
