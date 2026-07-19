@@ -23,7 +23,6 @@ import DefenseSystem from '@/pages/DefenseSystem';
 import MatchSimulation from '@/pages/MatchSimulation';
 import AutoRanking from '@/pages/AutoRanking';
 import FoundersScore from '@/pages/FoundersScore';
-import Presentation from '@/pages/Presentation';
 import RoleGuard from '@/components/RoleGuard';
 // Add page imports here
 
@@ -55,7 +54,6 @@ const AuthenticatedApp = () => {
     <Routes>
       {/* Add your page Route elements here */}
       <Route path="/" element={<Home />} />
-      <Route path="/presentation" element={<Presentation />} />
       <Route path="/apply/founder" element={<ApplyFounder />} />
       <Route path="/apply/investor" element={<ApplyInvestor />} />
       <Route path="/login" element={<Login />} />
