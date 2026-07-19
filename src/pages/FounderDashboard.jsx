@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy, Github, Linkedin, Globe, Star, TrendingUp, Rocket,
-  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users, Scale, MessageSquare
+  Plus, Zap, Award, Activity, Check, X, Video, FileText, Users, Scale, MessageSquare, Eye
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
@@ -17,6 +17,7 @@ import ProfileEditModal from '@/components/founder/ProfileEditModal';
 import TeamManager from '@/components/founder/TeamManager';
 import FounderAgent from '@/components/founder/FounderAgent';
 import JudgeAI from '@/components/judge/JudgeAI';
+import OfferDetailsModal from '@/components/offers/OfferDetailsModal';
 
 export default function FounderDashboard() {
   const [profile, setProfile] = useState(null);
@@ -27,6 +28,7 @@ export default function FounderDashboard() {
   const [newProject, setNewProject] = useState({ name: '', tagline: '', description: '', category: 'AI/ML', stage: 'MVP' });
   const [judgeTarget, setJudgeTarget] = useState(null);
   const [judgeType, setJudgeType] = useState('founder');
+  const [offerDetails, setOfferDetails] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -341,6 +343,7 @@ export default function FounderDashboard() {
                       offer.status === 'negotiating' ? 'bg-amber-500/20 text-amber-300' :
                       'bg-white/10 text-white/60'
                     }`}>{offer.status}</span>
+                    <Button size="sm" variant="outline" onClick={() => setOfferDetails(offer)} className="border-sky-500/30 text-sky-300 hover:bg-sky-500/10"><Eye className="w-4 h-4" /></Button>
                     {offer.status === 'pending' && (
                       <>
                         <Button size="sm" onClick={() => handleOffer(offer, 'accepted')} className="bg-emerald-500 hover:bg-emerald-600"><Check className="w-4 h-4" /></Button>
@@ -359,6 +362,9 @@ export default function FounderDashboard() {
         <JudgeAI target={judgeTarget} type={judgeType} onClose={() => setJudgeTarget(null)} />
       )}
 
+      {offerDetails && (
+        <OfferDetailsModal offer={offerDetails} role="founder" context={{ founder: profile, project: projects.find(p => p.id === offerDetails.project_id) }} onClose={() => setOfferDetails(null)} />
+      )}
       {negotiateOffer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setNegotiateOffer(null)}>
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()} className="max-w-md w-full p-8 rounded-2xl bg-zinc-900 border border-white/10">

@@ -19,10 +19,11 @@ import FounderReportModal from '@/components/investor/FounderReportModal';
 import ProjectReportModal from '@/components/investor/ProjectReportModal';
 import ProjectAgent from '@/components/project/ProjectAgent';
 import JudgeAI from '@/components/judge/JudgeAI';
+import OfferDetailsModal from '@/components/offers/OfferDetailsModal';
 import {
   Trophy, TrendingUp, Star, Zap, Search, Award, Flame,
   Activity, DollarSign, Lightbulb, Sparkles, Send, Calendar,
-  Bookmark, GitCompare, Rocket
+  Bookmark, GitCompare, Rocket, Eye
 } from 'lucide-react';
 
 export default function InvestorDashboard() {
@@ -49,6 +50,7 @@ export default function InvestorDashboard() {
   const [projectAgent, setProjectAgent] = useState(null);
   const [judgeTarget, setJudgeTarget] = useState(null);
   const [judgeType, setJudgeType] = useState('founder');
+  const [offerDetails, setOfferDetails] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => { loadData(); }, []);
@@ -336,7 +338,10 @@ export default function InvestorDashboard() {
                       </div>
                     )}
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${offer.status === 'accepted' ? 'bg-emerald-500/20 text-emerald-300' : offer.status === 'rejected' ? 'bg-red-500/20 text-red-300' : offer.status === 'negotiating' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/60'}`}>{offer.status}</span>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" onClick={() => setOfferDetails(offer)} className="border-sky-500/30 text-sky-300 hover:bg-sky-500/10"><Eye className="w-4 h-4" /></Button>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${offer.status === 'accepted' ? 'bg-emerald-500/20 text-emerald-300' : offer.status === 'rejected' ? 'bg-red-500/20 text-red-300' : offer.status === 'negotiating' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/60'}`}>{offer.status}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -404,6 +409,9 @@ export default function InvestorDashboard() {
       )}
       {projectAgent && (
         <ProjectAgent project={projectAgent} onClose={() => setProjectAgent(null)} />
+      )}
+      {offerDetails && (
+        <OfferDetailsModal offer={offerDetails} role="investor" context={{ investor: profile, project: projects.find(p => p.id === offerDetails.project_id), founder: founders.find(f => f.id === offerDetails.founder_id) }} onClose={() => setOfferDetails(null)} />
       )}
       {judgeTarget && (
         <JudgeAI target={judgeTarget} type={judgeType} onClose={() => setJudgeTarget(null)} />
