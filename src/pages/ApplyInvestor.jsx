@@ -1,18 +1,23 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { TrendingUp, ArrowRight, CheckCircle2, Building2 } from 'lucide-react';
+import { TrendingUp, ArrowRight, CheckCircle2, Building2, Lock, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function ApplyInvestor() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [form, setForm] = useState({
     full_name: '', email: '', fund_name: '', role: 'Partner',
     thesis: '', check_size: '$100K-$500K', sectors: '', linkedin_url: ''
@@ -22,8 +27,17 @@ export default function ApplyInvestor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      toast({ title: 'Error', description: 'Passwords do not match', variant: 'destructive' });
+      return;
+    }
+    if (password.length < 6) {
+      toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
+      return;
+    }
     setLoading(true);
     try {
+      await base44.auth.register({ email: form.email, password });
       await base44.entities.InvestorApplication.create({ ...form, status: 'approved' });
       await base44.entities.InvestorProfile.create({
         full_name: form.full_name,
@@ -33,8 +47,8 @@ export default function ApplyInvestor() {
         sectors: form.sectors ? form.sectors.split(',').map(s => s.trim()) : [],
         linkedin_url: form.linkedin_url || '',
       });
-      setSubmitted(true);
-      toast({ title: 'Application Approved!', description: 'Your request has been automatically validated. Your Investor Dashboard is ready.' });
+      setShowOtp(true);
+      toast({ title: 'Account Created!', description: 'Check your email for a verification code to access your dashboard.' });
     } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
@@ -42,8 +56,68 @@ export default function ApplyInvestor() {
     }
   };
 
+  const handleVerify = async () => {
+    setLoading(true);
+    try {
+      const result = await base44.auth.verifyOtp({ email: form.email, otpCode });
+      if (result?.access_token) {
+        base44.auth.setToken(result.access_token);
+      }
+      window.location.href = '/investor-dashboard';
+    } catch (err) {
+      toast({ title: 'Error', description: err.message || 'Invalid verification code', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      await base44.auth.resendOtp(form.email);
+      toast({ title: 'Code sent', description: 'Check your email for the new code.' });
+    } catch (err) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    }
+  };
+
   const roles = ['Partner', 'Principal', 'Associate', 'Angel Investor', 'Family Office', 'Other'];
   const checkSizes = ['$25K-$100K', '$100K-$500K', '$500K-$2M', '$2M-$10M', '$10M+'];
+
+  if (showOtp) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <Navbar />
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md w-full text-center">
+          <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-10 h-10 text-emerald-400" />
+          </div>
+          <h1 className="text-3xl font-black mb-3">Verify Your Email</h1>
+          <p className="text-white/60 mb-8">
+            We sent a verification code to {form.email}. Enter it below to activate your account and access your Investor Dashboard.
+          </p>
+          <div className="flex justify-center mb-6">
+            <InputOTP maxLength={6} value={otpCode} onChange={setOtpCode} autoFocus>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <Button onClick={handleVerify} disabled={loading || otpCode.length < 6} className="w-full bg-emerald-400 text-black hover:bg-emerald-500 font-bold h-12">
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Verifying...</> : 'Verify & Access Dashboard'}
+          </Button>
+          <p className="text-center text-sm text-white/40 mt-4">
+            Didn't receive the code?{' '}
+            <button onClick={handleResend} className="text-emerald-400 font-medium hover:underline">Resend</button>
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -118,6 +192,37 @@ export default function ApplyInvestor() {
                 placeholder="jane@vcfund.com"
                 className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
               />
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-white/80">Password *</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Input
+                  required
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-white/80">Confirm Password *</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Input
+                  required
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10"
+                />
+              </div>
             </div>
           </div>
 
