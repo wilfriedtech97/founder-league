@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Sparkles, TrendingUp, AlertTriangle, CheckCircle, DollarSign, Scale, Loader2 } from 'lucide-react';
+import { X, Sparkles, TrendingUp, AlertTriangle, CheckCircle, DollarSign, Scale, Loader2, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MarkdownContent from '@/components/MarkdownContent';
 import { useToast } from '@/components/ui/use-toast';
 import { base44 } from '@/api/base44Client';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function OfferDetailsModal({ offer, role, context, onClose }) {
   const [analysis, setAnalysis] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   const runAnalysis = async () => {
     setAnalyzing(true);
@@ -61,6 +63,7 @@ Use markdown formatting with bold labels and bullet points. Be specific and data
 
       const formatted = `## ${res.verdict}\n\n### Valuation Assessment\n${res.valuation_assessment}\n\n### Reward Potential\n${res.reward_potential}\n\n### Risk Factors\n${res.risk_factors}\n\n### Recommendation\n${res.recommendation}`;
       setAnalysis(formatted);
+      speak(formatted);
       toast({ title: 'AI analysis complete', description: 'Offer evaluation is ready.' });
     } catch (err) {
       toast({ title: 'Analysis failed', description: err.message, variant: 'destructive' });
@@ -133,6 +136,11 @@ Use markdown formatting with bold labels and bullet points. Be specific and data
 
           {analysis ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 rounded-xl bg-violet-500/5 border border-violet-500/20">
+              <div className="flex justify-end mb-2">
+                <button onClick={() => speak(analysis)} disabled={voiceLoading} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+                  {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
+                </button>
+              </div>
               <MarkdownContent className="text-sm text-white/80">{analysis}</MarkdownContent>
               <Button onClick={runAnalysis} disabled={analyzing} variant="outline" size="sm" className="mt-4 border-white/20 text-white">
                 {analyzing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Re-analyzing...</> : 'Re-run Analysis'}

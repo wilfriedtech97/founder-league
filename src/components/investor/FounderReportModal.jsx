@@ -5,11 +5,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { X, FileText, Loader2, Volume2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import ScoreRing from '@/components/ScoreRing';
+import { useVoice } from '@/hooks/useVoice';
 
 export default function FounderReportModal({ founder, projects, onClose }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { speak, speaking: voiceSpeaking, loading: voiceLoading } = useVoice();
 
   useEffect(() => {
     if (founder) generateReport();
@@ -39,19 +41,11 @@ ${founderProjects.length > 0 ? founderProjects.map(p => `- ${p.name}: Score ${p.
 Generate a report with: Executive Summary, Key Strengths, Weaknesses, Investment Recommendation (BUY/MONITOR/PASS with reasoning), Risk Analysis, and Growth Outlook. Format as markdown.`,
       });
       setReport(response);
+      speak(response);
     } catch (err) {
       toast({ title: 'Failed to generate report', variant: 'destructive' });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
     }
   };
 
@@ -87,8 +81,8 @@ Generate a report with: Executive Summary, Key Strengths, Weaknesses, Investment
         ) : (
           <div>
             <div className="flex justify-end mb-2">
-              <button onClick={() => speak(report)} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300">
-                <Volume2 className="w-3 h-3" /> Speak
+              <button onClick={() => speak(report)} disabled={voiceLoading} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 disabled:opacity-50">
+                {voiceLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Volume2 className="w-3 h-3" />} {voiceSpeaking ? 'Speaking...' : 'Speak'}
               </button>
             </div>
             <ReactMarkdown className="text-sm text-white/80 space-y-2">{report}</ReactMarkdown>
