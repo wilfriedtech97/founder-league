@@ -30,7 +30,7 @@ export default function Login() {
           const investorProfiles = await base44.entities.InvestorProfile.filter({ created_by_id: currentUser.id });
           if (investorProfiles.length > 0) { window.location.href = '/investor-dashboard'; return; }
         } catch (e) { /* ignore */ }
-        window.location.href = '/founder-dashboard';
+        window.location.href = '/founders-score';
       }
     } catch (err) {
       setError(err.message || "Invalid email or password");

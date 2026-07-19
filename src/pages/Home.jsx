@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
@@ -11,6 +11,7 @@ import { base44 } from '@/api/base44Client';
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
@@ -29,10 +30,16 @@ export default function Home() {
         const investorProfiles = await base44.entities.InvestorProfile.filter({ created_by_id: user.id });
         if (investorProfiles.length > 0) { setUserRole('investor'); return; }
       } catch (e) { /* ignore */ }
-      setUserRole('founder');
+      setUserRole('user');
     };
     determineRole();
   }, [user, isAuthenticated]);
+
+  useEffect(() => {
+    if (userRole === 'admin') navigate('/admin', { replace: true });
+    else if (userRole === 'founder') navigate('/founder-dashboard', { replace: true });
+    else if (userRole === 'investor') navigate('/investor-dashboard', { replace: true });
+  }, [userRole, navigate]);
 
   const agents = [
     { name: 'Founder AI Agent', desc: 'Represents, explains, and negotiates on behalf of the founder — like a football agent for Ronaldo.', icon: Bot, color: 'from-amber-400 to-orange-600' },
